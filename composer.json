@@ -1,0 +1,37 @@
+{
+	"name": "mediawiki/user-bitcoin-addresses",
+	"type": "mediawiki-extension",
+	"description": "MediaWiki extension allowing users to submit his Bitcoin addresses for usage with other Bitcoin related extensions.",
+	"keywords": [
+		"MediaWiki",
+		"Bitcoin",
+		"btc"
+	],
+	"homepage": "https://www.mediawiki.org/wiki/Extension:UserBitcoinAddresses",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Daniel A. R. Werner",
+			"email": "daniel.a.r.werner@gmail.com",
+			"homepage": "https://www.mediawiki.org/wiki/User:Danwe",
+			"role": "developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/DanweDE/mediawiki-ext-UserBitcoinAddresses/issues"
+	},
+	"require": {
+		"php": ">=5.4.0",
+		"composer/installers": ">=1.0.1",
+		"danwe/bitcoin-address": "dev-master"
+	},
+	"autoload": {
+		"files" : [
+			"UserBitcoinAddresses.php"
+		],
+		"psr-4": {
+			"MediaWiki\\Ext\\UserBitcoinAddresses\\": "src/",
+			"MediaWiki\\Ext\\UserBitcoinAddresses\\Tests\\": "tests/"
+		}
+	}
+}

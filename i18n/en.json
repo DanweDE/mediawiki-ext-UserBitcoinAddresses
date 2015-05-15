@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Daniel A. R. Werner"
+        ]
+    },
+    "userbtcaddr-desc": "Allows the wiki's users to [[Special:User Bitcoin Addresses|submit Bitcoin addresses]] for usage with other Bitcoin related extensions."
+}
