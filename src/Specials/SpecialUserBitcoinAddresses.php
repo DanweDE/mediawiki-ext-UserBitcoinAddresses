@@ -2,6 +2,8 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 
 use SpecialPage;
+use Html;
+use HTMLForm;
 
 /**
  * @since 1.0.0
@@ -19,6 +21,25 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 
 		$this->requireLogin();
 		$this->checkReadOnly();
+
+		$this->buildSubmitForm();
+	}
+
+
+	protected function buildSubmitForm() {
+		$form = new HTMLForm( array(
+			'myfield1' => array(
+				'label-message' => 'userbtcaddr-submitaddresses-manualinsert-addresses-label',
+				'type' => 'textarea',
+				'cols' => 34,
+				'rows' => 5,
+				'spellcheck' => false, // TODO: Implement support for this in MW core.
+			),
+		), $this->getContext() );
+		$form->setMethod( 'post' );
+		$form->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' );
+
+		$form->prepareForm()->displayForm( false );
 	}
 
 	/**
