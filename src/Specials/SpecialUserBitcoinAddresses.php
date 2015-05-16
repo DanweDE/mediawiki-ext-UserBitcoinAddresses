@@ -17,6 +17,10 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 
 	public function execute( $subPage ) {
 		parent::execute( $subPage );
+
+		$this->requireLogin( 'userbtcaddr-loginrequired' );
+		$this->checkReadOnly();
+
 	}
 
 	/**

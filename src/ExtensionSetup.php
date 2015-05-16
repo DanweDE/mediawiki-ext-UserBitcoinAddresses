@@ -48,6 +48,7 @@ class ExtensionSetup {
 	 */
 	public function run() {
 		$this->registerSpecialPages();
+		$this->registerHooks();
 		$this->registerUnitTests();
 	}
 
@@ -56,6 +57,21 @@ class ExtensionSetup {
 
 		$this->globals['wgSpecialPages']['UserBitcoinAddresses']
 			= "$specialNs\\SpecialUserBitcoinAddresses";
+	}
+
+	public function registerHooks() {
+		/**
+		 * Allows to add message keys accepted in the "warning" url parameter on redirects to
+		 * Special:UserLogin.
+		 *
+		 * @since MW 1.25
+		 *
+		 * https://www.mediawiki.org/wiki/Manual:Hooks/LoginFormValidErrorMessages
+		 */
+		$this->globals['wgHooks']['LoginFormValidErrorMessages'][] = function( &$messages ) {
+			$messages[] = 'userbtcaddr-loginrequired';
+			return true;
+		};
 	}
 
 	private function registerUnitTests() {
