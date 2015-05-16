@@ -4,5 +4,6 @@
             "Daniel A. R. Werner"
         ]
     },
-	"userbtcaddr-desc": "{{desc|name=User Bitcoin Addresses|url=https://www.mediawiki.org/wiki/Extension:UserBitcoinAddresses}}"
+	"userbtcaddr-desc": "{{desc|name=User Bitcoin Addresses|url=https://www.mediawiki.org/wiki/Extension:UserBitcoinAddresses}}",
+	"special-userbitcoinaddresses": "{{doc-special|UserBitcoinAddresses}}\nSpecial page for the user to upload Bitcoin addresses to be used by other Bitcoin related extensions."
 }

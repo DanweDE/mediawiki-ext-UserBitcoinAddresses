@@ -4,5 +4,6 @@
             "Daniel A. R. Werner"
         ]
     },
-    "userbtcaddr-desc": "Allows the wiki's users to [[Special:User Bitcoin Addresses|submit Bitcoin addresses]] for usage with other Bitcoin related extensions."
+    "userbtcaddr-desc": "Allows the wiki's users to [[Special:UserBitcoinAddresses|submit Bitcoin addresses]] for usage with other Bitcoin related extensions.",
+	"special-userbitcoinaddresses": "User Bitcoin Addresses"
 }
