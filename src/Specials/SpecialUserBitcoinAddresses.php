@@ -2,7 +2,6 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 
 use SpecialPage;
-use Html;
 
 /**
  * @since 1.0.0
@@ -18,9 +17,24 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	public function execute( $subPage ) {
 		parent::execute( $subPage );
 
-		$this->requireLogin( 'userbtcaddr-loginrequired' );
+		$this->requireLogin();
 		$this->checkReadOnly();
+	}
 
+	/**
+	 * @see SpecialPage::requireLogin
+	 */
+	public function requireLogin(
+		$reasonMsg = null, $titleMsg = 'exception-nologin'
+	) {
+		global $wgVersion;
+
+		if( $reasonMsg === null ) {
+			$reasonMsg = version_compare( $wgVersion, '1.25rc', '>=' )
+				? 'userbtcaddr-loginrequired' // added in LoginFormValidErrorMessages hook (MW 1.25)
+				: 'prefsnologintext2';
+		}
+		parent::requireLogin( $reasonMsg, $titleMsg );
 	}
 
 	/**
