@@ -48,30 +48,25 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 			] ),
 			'addressesToBeCorrected' => $addressFieldTemplate,
 		];
-
-		$form = new HTMLForm( $formData, $context );
-		$form
+		( new HTMLForm( $formData, $context ) )
 			->setMethod( 'post' )
 			->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' )
-			->setSubmitCallback( [ $this, 'formSubmitted' ] );
-
-		$form->prepareForm();
-		$result = $form->tryAuthorizedSubmit();
-
-		if ( $result === true || ( $result instanceof Status && $result->isGood() ) ) {
-			$emptyRequest = new DerivativeRequest( $this->getRequest(), [] );
-			$emptyRequestContext = clone $this->getContext();
-			$emptyRequestContext->setRequest( $emptyRequest );
-
-			$this->renderSubmitForm( $emptyRequestContext );
-		} else {
-			$form->displayForm( $result );
-		}
-
+			->setSubmitCallback( [ $this, 'formSubmitted' ] )
+			// Renders form if failure or empty. On-success rendering handled in "formSubmitted".
+			->show();
 	}
 
 	public function formSubmitted( $data, HTMLForm $form ) {
+		$this->renderSubmitFormAsEmpty( $form ); // Display form again but empty data.
 		return true;
+	}
+
+	protected function renderSubmitFormAsEmpty( HtmlForm $form ) {
+		$emptyRequest = new DerivativeRequest( $form->getRequest(), [] );
+		$emptyRequestContext = clone $form->getContext();;
+		$emptyRequestContext->setRequest( $emptyRequest );
+
+		$this->renderSubmitForm( $emptyRequestContext );
 	}
 
 	public function validateAddressInput( $value, $alldata, $form ) {
