@@ -28,13 +28,12 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->renderSubmitForm( $this->getContext() );
 	}
 
-
 	protected function renderSubmitForm( $context ) {
 		$addressFieldTemplate = [
 			'type' => 'textarea',
 			'cols' => 34,
 			'rows' => 5,
-			'spellcheck' => false, // TODO: Implement support for this in MW core.
+			'spellcheck' => false, // TODO: Works after I5882e gets merged into MW core.
 		];
 		$formData = [
 			'info-intro' => [
