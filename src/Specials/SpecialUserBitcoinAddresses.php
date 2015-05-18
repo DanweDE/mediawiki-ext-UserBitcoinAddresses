@@ -3,6 +3,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 
 use \Exception;
 use SpecialPage;
+use DerivativeRequest;
 use Html;
 use HTMLForm;
 use Danwe\Bitcoin\Address as BtcAddress;
@@ -24,18 +25,18 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->requireLogin();
 		$this->checkReadOnly();
 
-		$this->renderSubmitForm();
+		$this->renderSubmitForm( $this->getContext() );
 	}
 
 
-	protected function renderSubmitForm() {
+	protected function renderSubmitForm( $context ) {
 		$addressFieldTemplate = [
 			'type' => 'textarea',
 			'cols' => 34,
 			'rows' => 5,
 			'spellcheck' => false, // TODO: Implement support for this in MW core.
 		];
-		$form = new HTMLForm( [
+		$formData = [
 			'info-intro' => [
 				'type' => 'info',
 				'vertical-label' => true,
@@ -46,16 +47,31 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 				'validation-callback' => [ $this, 'validateAddressInput' ],
 			] ),
 			'addressesToBeCorrected' => $addressFieldTemplate,
-		], $this->getContext() );
+		];
+
+		$form = new HTMLForm( $formData, $context );
 		$form
 			->setMethod( 'post' )
 			->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' )
-			->setSubmitCallback( [ $this, 'formSubmitted' ] )
-			->show();
+			->setSubmitCallback( [ $this, 'formSubmitted' ] );
+
+		$form->prepareForm();
+		$result = $form->tryAuthorizedSubmit();
+
+		if ( $result === true || ( $result instanceof Status && $result->isGood() ) ) {
+			$emptyRequest = new DerivativeRequest( $this->getRequest(), [] );
+			$emptyRequestContext = clone $this->getContext();
+			$emptyRequestContext->setRequest( $emptyRequest );
+
+			$this->renderSubmitForm( $emptyRequestContext );
+		} else {
+			$form->displayForm( $result );
+		}
+
 	}
 
 	public function formSubmitted( $data, HTMLForm $form ) {
-
+		return true;
 	}
 
 	public function validateAddressInput( $value, $alldata, $form ) {
