@@ -1,9 +1,11 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 
+use \Exception;
 use SpecialPage;
 use Html;
 use HTMLForm;
+use Danwe\Bitcoin\Address as BtcAddress;
 
 /**
  * @since 1.0.0
@@ -22,24 +24,73 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->requireLogin();
 		$this->checkReadOnly();
 
-		$this->buildSubmitForm();
+		$this->renderSubmitForm();
 	}
 
 
-	protected function buildSubmitForm() {
-		$form = new HTMLForm( array(
-			'myfield1' => array(
+	protected function renderSubmitForm() {
+		$addressFieldTemplate = [
+			'type' => 'textarea',
+			'cols' => 34,
+			'rows' => 5,
+			'spellcheck' => false, // TODO: Implement support for this in MW core.
+		];
+		$form = new HTMLForm( [
+			'info-intro' => [
+				'type' => 'info',
+				'vertical-label' => true,
+				'label-message' => 'userbtcaddr-submitaddresses-manualinsert-addresses-explanation'
+			],
+			'addresses' => array_merge( $addressFieldTemplate, [
 				'label-message' => 'userbtcaddr-submitaddresses-manualinsert-addresses-label',
-				'type' => 'textarea',
-				'cols' => 34,
-				'rows' => 5,
-				'spellcheck' => false, // TODO: Implement support for this in MW core.
-			),
-		), $this->getContext() );
-		$form->setMethod( 'post' );
-		$form->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' );
+				'validation-callback' => [ $this, 'validateAddressInput' ],
+			] ),
+			'addressesToBeCorrected' => $addressFieldTemplate,
+		], $this->getContext() );
+		$form
+			->setMethod( 'post' )
+			->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' )
+			->setSubmitCallback( [ $this, 'formSubmitted' ] )
+			->show();
+	}
 
-		$form->prepareForm()->displayForm( false );
+	public function formSubmitted( $data, HTMLForm $form ) {
+
+	}
+
+	public function validateAddressInput( $value, $alldata, $form ) {
+		$allAddresses = $alldata['addresses'] . ' ' . $alldata['addressesToBeCorrected'];
+		$addressStrings = array_filter(
+			array_unique( preg_split( "/[^A-Za-z0-9]+/", $allAddresses ) ),
+			function( $val ) { return $val !== ''; }
+		);
+		$invalidAddressStrings = [];
+		$validAddressStrings = [];
+
+		foreach( $addressStrings as $addressString ) {
+			try {
+				new BtcAddress( $addressString );
+				$validAddressStrings[] = $addressString;
+			} catch( Exception $error ) {
+				$invalidAddressStrings[] = $addressString;
+			}
+		}
+
+		$form->mFieldData['addresses'] = implode( "\n", $validAddressStrings );
+		$form->mFieldData['addressesToBeCorrected'] = implode( "\n", $invalidAddressStrings );
+
+		if( !empty( $invalidAddressStrings ) ) {
+
+			$msg = $this->msg(
+				'userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest',
+				sizeof( $invalidAddressStrings )
+			)->parse();
+			return HTML::element( 'div', [ 'class' => 'error' ] , $msg );
+		}
+		else if( empty( $validAddressStrings ) ) {
+			return HTML::element( 'div', [ 'class' => 'error' ] , 'no addresses given!' );
+		}
+		return true;
 	}
 
 	/**

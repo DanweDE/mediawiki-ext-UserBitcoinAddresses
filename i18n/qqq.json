@@ -8,5 +8,7 @@
 	"special-userbitcoinaddresses": "{{doc-special|UserBitcoinAddresses}}\nSpecial page for the user to upload Bitcoin addresses to be used by other Bitcoin related extensions.",
 	"userbtcaddr-loginrequired": "Displayed if anon user attempts to call Special:UserBitcoinAddresses, states that login is required.",
 	"userbtcaddr-submitaddresses-manualinsert-legend": "Label of form allowing manually inserting the user's Bitcoin addresses.",
-	"userbtcaddr-submitaddresses-manualinsert-addresses-label": "Respective label for Bitcoin addresses input text area."
+	"userbtcaddr-submitaddresses-manualinsert-addresses-label": "Respective label for Bitcoin addresses input text area.",
+	"userbtcaddr-submitaddresses-manualinsert-addresses-explanation": "States how multiple addresses can be separated within the Bitcoin addresses text area.",
+	"userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest": "Displayed when the user attempts to submit one or more invalid Bitcoin addresses."
 }
