@@ -47,9 +47,20 @@ class ExtensionSetup {
 	 * @since 1.0.0
 	 */
 	public function run() {
+		$this->registerResources();
 		$this->registerSpecialPages();
 		$this->registerHooks();
 		$this->registerUnitTests();
+	}
+
+	private function registerResources() {
+		// Resource Loader module registration
+		$this->globals['wgResourceModules'] = array_merge(
+			isset( $this->globals['wgResourceModules'] )
+				? $this->globals['wgResourceModules']
+				: array(),
+			include( __DIR__ . '/../resources/src/resources.php' )
+		);
 	}
 
 	private function registerSpecialPages() {

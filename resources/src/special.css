@@ -1,0 +1,14 @@
+/**
+ * Styles for 'UserBitcoinAddresses' special page.
+ *
+ * @licence MIT Licence
+ * @author Daniel A. R. Werner < daniel.a.r.werner@gmail.com >
+ */
+
+form .error {
+	font-size: 1em;
+}
+
+fieldset > div.error {
+	display: none;
+}

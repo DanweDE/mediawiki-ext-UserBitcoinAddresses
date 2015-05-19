@@ -26,6 +26,8 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->checkReadOnly();
 
 		$this->renderSubmitForm( $this->getContext() );
+
+		$this->getOutput()->addModules( 'mw.ext.userBitcoinAddresses.special' );
 	}
 
 	protected function renderSubmitForm( $context ) {
