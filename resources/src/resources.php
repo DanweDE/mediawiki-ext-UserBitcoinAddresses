@@ -23,6 +23,7 @@ return call_user_func( function() {
 			),
 		),
 		'mw.ext.userBitcoinAddresses.special' => $moduleTemplate + array(
+			'position' => 'top',
 			'scripts' => array(
 				'special.js',
 			),
