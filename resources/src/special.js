@@ -16,6 +16,11 @@
 		} else if( $addr1.text() === '' ) {
 			$addr1.hide();
 		}
+
+		$addr1.add( $addr2 ).inputautoexpand( {
+			expandWidth: false,
+			expandHeight: true
+		} );
 	} );
 
 } )( jQuery );

@@ -31,7 +31,25 @@ return call_user_func( function() {
 				'special.css',
 			),
 			'dependencies' => array(
-				'mw.ext.userBitcoinAddresses'
+				'mw.ext.userBitcoinAddresses',
+				'jquery.inputautoexpand'
+			),
+		),
+		// VENDOR: (TODO: Move these from here and Wikibase to somewhere where we can share code)
+		'jquery.inputautoexpand' => $moduleTemplate + array(
+			'scripts' => array(
+				'vendor/jquery.inputautoexpand.js',
+			),
+			'dependencies' => array(
+				'jquery.event.special.eachchange',
+			),
+		),
+		'jquery.event.special.eachchange' => $moduleTemplate + array(
+			'scripts' => array(
+				'vendor/jquery.event.special.eachchange.js'
+			),
+			'dependencies' => array(
+				'jquery.client',
 			),
 		),
 	);
