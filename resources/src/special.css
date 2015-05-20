@@ -12,3 +12,10 @@ form .error {
 fieldset > div.error {
 	display: none;
 }
+
+#userbtcaddr-submitaddresses-manualinsert textarea {
+	width: 35.9ch; /* BTC Address 34 characters
+	              * +1 for "," if user wants to use for separating
+	              * +1 for general styling (border, padding etc.)
+	              */
+}

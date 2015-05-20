@@ -52,6 +52,7 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		( new HTMLForm( $formData, $context ) )
 			->setMethod( 'post' )
 			->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' )
+			->setId( 'userbtcaddr-submitaddresses-manualinsert' )
 			->setSubmitCallback( [ $this, 'formSubmitted' ] )
 			// Renders form if failure or empty. On-success rendering handled in "formSubmitted".
 			->show();
