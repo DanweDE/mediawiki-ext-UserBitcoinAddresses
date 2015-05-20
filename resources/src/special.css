@@ -13,6 +13,10 @@ fieldset > div.error {
 	display: none;
 }
 
+fieldset.containserror { /* added via JS */
+	border-color: #cc0000;
+}
+
 #userbtcaddr-submitaddresses-manualinsert textarea {
 	width: 35.9ch; /* BTC Address 34 characters
 	              * +1 for "," if user wants to use for separating
