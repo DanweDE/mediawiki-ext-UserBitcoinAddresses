@@ -21,10 +21,13 @@
 				$addr1.hide();
 			}
 
-			$addr1.add( $addr2 ).inputautoexpand( {
-				expandWidth: false,
-				expandHeight: true
-			} );
+			$addr1.add( $addr2 )
+				.inputautoexpand( {
+					expandWidth: false,
+					expandHeight: true
+				} )
+				.attr( 'spellcheck', 'false' )
+			;
 		}
 
 		function addFieldsetContainserrorClasses() {
