@@ -10,6 +10,9 @@ use Danwe\Bitcoin\Address as BtcAddress;
 
 /**
  * @since 1.0.0
+ *
+ * @licence MIT License
+ * @author Daniel A. R. Werner
  */
 class SpecialUserBitcoinAddresses extends SpecialPage {
 	/**

@@ -10,5 +10,5 @@
 	"userbtcaddr-submitaddresses-manualinsert-legend": "Manually insert addresses",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-label": "Addresses",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-explanation": "Multiple addresses may be separated by a newline or any other non-alphanumeric character.",
-	"userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest": "The following {{PLURAL:$1|address is|$1 addresses are}} not valid. Please correct or remove {{PLURAL:$1|it|them}}:"
+	"userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest": "Please remove or correct the following {{PLURAL:$1|address|$1 addresses}}:"
 }
