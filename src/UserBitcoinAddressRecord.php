@@ -68,7 +68,9 @@ class UserBitcoinAddressRecord implements UserBitcoinAddress {
 	}
 
 	protected function consistencyCheck() {
-		if( $this->addedOn > $this->exposedOn ) {
+		if( $this->addedOn !== null && $this->exposedOn !== null
+			&& $this->addedOn > $this->exposedOn
+		) {
 			throw new LogicException( 'date the address was added can not be after its exposure date' );
 		}
 	}
