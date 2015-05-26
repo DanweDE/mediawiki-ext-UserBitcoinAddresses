@@ -51,7 +51,7 @@ class UserBitcoinAddressRecordBuilder {
 	 * @param int $id
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function id( $id ) {
+	public function id( $id = null ) {
 		if( $id !== null && !is_int( $id ) || $id < 0 ) {
 			throw new InvalidArgumentException( 'id has to be a integer >= 0 or null' );
 		}
@@ -102,10 +102,7 @@ class UserBitcoinAddressRecordBuilder {
 	 * @param DateTime|null $date
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function addedOn( DateTime $date ) {
-		if( $date !== null && !( $date instanceof DateTime ) ) {
-			throw new InvalidArgumentException( 'date has to be a DateTime object or null' );
-		}
+	public function addedOn( DateTime $date = null ) {
 		$this->addedOn = $date;
 		return $this;
 	}
@@ -121,10 +118,7 @@ class UserBitcoinAddressRecordBuilder {
 	 * @param DateTime|null $date
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function exposedOn( $date ) {
-		if( $date !== null && !( $date instanceof DateTime ) ) {
-			throw new InvalidArgumentException( 'date has to be a DateTime object or null' );
-		}
+	public function exposedOn( DateTime $date = null ) {
 		$this->exposedOn = $date;
 		return $this;
 	}
@@ -140,7 +134,7 @@ class UserBitcoinAddressRecordBuilder {
 	 * @param string|null $keyword
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function addedThrough( $keyword ) {
+	public function addedThrough( $keyword = null ) {
 		if( $keyword !== null && !is_string( $keyword ) ) {
 			throw new InvalidArgumentException( 'keyword has to be a string or null' );
 		}
@@ -159,7 +153,7 @@ class UserBitcoinAddressRecordBuilder {
 	 * @param string|null $keyword
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function purpose( $keyword ) {
+	public function purpose( $keyword = null ) {
 		if( $keyword !== null && !is_string( $keyword ) ) {
 			throw new InvalidArgumentException( 'keyword has to be a string or null' );
 		}
