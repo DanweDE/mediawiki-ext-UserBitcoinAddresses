@@ -96,6 +96,16 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @depends testSettingUpBuilderWithInvalidValues
+	 */
+	public function testBuildMultipleTimesCreatesSeparateInstances( $builder, $builderBuildSteps, $buildException ) {
+		$build1 = $builder->build();
+		$build2 = $builder->build();
+		$this->assertTrue( $build1 !== $build2 );
+	}
+
+	/**
 	 * Returns the builder's getter member name based on a given build step name.
 	 *
 	 * @param string $buildStep

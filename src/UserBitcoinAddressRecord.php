@@ -132,4 +132,19 @@ class UserBitcoinAddressRecord implements UserBitcoinAddress {
 	public function isExposed() {
 		return $this->getExposedOn() !== null;
 	}
+
+	/**
+	 * Returns whether the given UserBitcoinAddressRecord equals the given one. This is the case if
+	 * the address as well as the user are equal. Other data has no influence on the comparison.
+	 */
+	public function equals( $other ) {
+		if( !( $other instanceof UserBitcoinAddressRecord ) ) {
+			return false;
+		}
+		if( $this === $other ) {
+			return true;
+		}
+		return $this->getUser()->equals( $other->getUser() )
+			&& $this->getBitcoinAddress()->equals( $other->getBitcoinAddress() );
+	}
 }
