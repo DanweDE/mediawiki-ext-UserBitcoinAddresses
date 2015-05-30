@@ -11,7 +11,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
  * @author Daniel A. R. Werner
  */
 class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
-	
+
 	public function testConstruction() {
 		$this->assertInstanceOf(
 			'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder',
