@@ -1,11 +1,8 @@
 <?php
 
-namespace MediaWiki\Ext\UserBitcoinAddresses\Tests;
+namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
-use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
-use Danwe\Bitcoin\Address as BtcAddress;
-use DateTime;
 
 /**
  * @since 1.0.0
@@ -15,4 +12,17 @@ use DateTime;
  */
 class UserBitcoinAddressRecordTest extends \PHPUnit_Framework_TestCase {
 
+	public function __construct( $name = null, array $data = array(), $dataName = '' ) {
+		parent::__construct( $name, $data, $dataName );
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 */
+	public function testConstruction( $builder, $builderBuildSteps ) {
+		$this->assertInstanceOf(
+			'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord',
+			new UserBitcoinAddressRecord( $builder )
+		);
+	}
 }
