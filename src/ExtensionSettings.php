@@ -7,6 +7,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses;
  * @since 1.0.0
  *
  * @licence MIT License
+ * @author Jeroen De Dauw < jeroendedauw@gmail.com >
  * @author Daniel A. R. Werner <daniel.a.r.werner@gmail.com>
  */
 class ExtensionSettings {

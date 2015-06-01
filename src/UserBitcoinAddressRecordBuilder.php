@@ -14,6 +14,7 @@ use User;
  *   new UserBitcoinAddressBuilder()
  *     ->user( new User( 1337 ) )
  *     ->bitcoinAddress( new Address( '1Gqk4Tv79P91Cc1STQtU3s1W6277M2CVWu' )
+ *     ->build();
  *
  * @since 1.0.0
  *
