@@ -3,6 +3,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use DatabaseUpdater;
 use SplFileInfo;
 
 /**
@@ -59,7 +60,7 @@ class ExtensionSetup {
 			isset( $this->globals['wgResourceModules'] )
 				? $this->globals['wgResourceModules']
 				: array(),
-			include( __DIR__ . '/../resources/src/resources.php' )
+			include( "{$this->rootDirectory}/resources/src/resources.php" )
 		);
 	}
 
@@ -75,12 +76,30 @@ class ExtensionSetup {
 		 * Allows to add message keys accepted in the "warning" url parameter on redirects to
 		 * Special:UserLogin.
 		 *
-		 * @since MW 1.25
+		 * Added in MW 1.25. Fallback handling added in SpecialUserBitcoinAddresses.php
 		 *
-		 * https://www.mediawiki.org/wiki/Manual:Hooks/LoginFormValidErrorMessages
+		 * @see https://www.mediawiki.org/wiki/Manual:Hooks/LoginFormValidErrorMessages
 		 */
 		$this->globals['wgHooks']['LoginFormValidErrorMessages'][] = function( &$messages ) {
 			$messages[] = 'userbtcaddr-loginrequired';
+			return true;
+		};
+
+		/**
+		 * This will setup database tables for layer functionality.
+		 *
+		 * @see https://www.mediawiki.org/wiki/Manual:Hooks/LoadExtensionSchemaUpdates
+		 */
+		$this->globals['wgHooks']['LoadExtensionSchemaUpdates'][] = function( DatabaseUpdater $updater ) {
+			switch( $GLOBALS['wgDBtype'] ) {
+				case 'mysql':
+				case 'sqlite':
+					$updater->addExtensionTable(
+						'user_bitcoin_addresses',
+						"{$this->rootDirectory}/schema/UserBitcoinAddresses.sql"
+					);
+					break;
+			}
 			return true;
 		};
 	}
@@ -90,12 +109,8 @@ class ExtensionSetup {
 
 		/**
 		 * Hook to add PHPUnit test cases.
+		 *
 		 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UnitTestsList
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param array $files
-		 * @return boolean
 		 */
 		$this->globals['wgHooks']['UnitTestsList'][] = function( array &$files ) use ( $rootDirectory ) {
 			$directoryIterator = new RecursiveDirectoryIterator( $rootDirectory . '/tests/' );
