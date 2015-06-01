@@ -18,15 +18,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses;
 class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 
 	protected function newSpecialPage() {
-		$page = $this
-			->getMockBuilder( 'MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses' )
-			->disableOriginalClone()
-			->setMethods( [ 'userCanExecute' ] )
-			->getMock();
-		$page->expects( $this->any() )
-			->method( 'userCanExecute' )
-			->will( $this->returnValue( true ) );
-		return $page;
+		return new SpecialUserBitcoinAddresses();
 	}
 
 	/**
@@ -35,17 +27,19 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 	public function testValidAndInvalidAddressesInserted( $input, $result ) {
 		$user = $this
 			->getMockBuilder( 'User' )
-			->setMethods( [ 'isAnon' ])
+			->setMethods( [ 'isAnon', 'isAllowed' ])
 			->setConstructorArgs( [ 'SpecialUserBitcoinAddressesTestUser' ] )
 			->getMock();
 		$user->expects( $this->any() )
 			->method( 'isAnon' )
 			->will( $this->returnValue( false ) );
+		$user->expects( $this->any() )
+			->method( 'isAllowed' )
+			->will( $this->returnValue( true ) );
 
 		$request = new FauxRequest( array(
 			'wpaddresses' => $input[ 'addresses' ],
 			'wpaddressesToBeCorrected' => $input[ 'addressesToBeCorrected' ],
-			'title' => $this->newSpecialPage()->getTitle()->getPrefixedText(),
 			'wpEditToken' => $user->getEditToken(),
 		), true );
 
