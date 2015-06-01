@@ -5,6 +5,8 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
 /**
+ * @group UserBitcoinAddresses
+ *
  * @since 1.0.0
  *
  * @licence MIT License
