@@ -27,7 +27,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\ExtensionSetup;
 use MediaWiki\Ext\UserBitcoinAddresses\ExtensionSettings;
 
 call_user_func( function() {
-	global $wgExtensionCredits, $wgMessagesDirs, $wgExtensionFunctions;
+	global $wgExtensionCredits, $wgMessagesDirs, $wgExtensionMessagesFiles, $wgExtensionFunctions;
 
 	$wgExtensionCredits[ 'specialpage' ][] = array(
 		'path' => __FILE__,
@@ -41,7 +41,10 @@ call_user_func( function() {
 		'license-name' => 'MIT'
 	);
 
-	$wgMessagesDirs['UserBitcoinAddresses'] = __DIR__ . '/i18n';
+	$wgMessagesDirs[ 'UserBitcoinAddresses' ] = __DIR__ . '/i18n';
+
+	$wgExtensionMessagesFiles[ 'UserBitcoinAddresses.i18n.aliases' ]
+		= __DIR__ . '/UserBitcoinAddresses.i18n.aliases.php';
 
 	$wgExtensionFunctions[] = function() {
 		global $wgHooks;
