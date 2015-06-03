@@ -1,7 +1,7 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses;
 
-use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 /**
  * Top level factory for the extension.
@@ -40,18 +40,31 @@ class Extension {
 	/**
 	 * @since 1.0.0
 	 *
-	 * @return DBConnectionProvider
+	 * @return Store\DBConnectionProvider
 	 */
 	public function getSlaveConnectionProvider() {
-		return new LazyDBConnectionProvider( DB_SLAVE );
+		return new Store\LazyDBConnectionProvider( DB_SLAVE );
 	}
 
 	/**
 	 * @since 1.0.0
 	 *
-	 * @return DBConnectionProvider
+	 * @return Store\DBConnectionProvider
 	 */
 	public function getMasterConnectionProvider() {
-		return new LazyDBConnectionProvider( DB_MASTER );
+		return new Store\LazyDBConnectionProvider( DB_MASTER );
 	}
+
+	/**
+	 * @since 1.0.0
+	 *
+	 * @return Store\UserBitcoinAddressRecordStore
+	 */
+	public function getUserBitcoinAddressRecordStore() {
+		return new Store\UserBitcoinAddressRecordMwDbStore(
+			$this->getSlaveConnectionProvider(),
+			$this->getMasterConnectionProvider()
+		);
+	}
+
 }
