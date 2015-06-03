@@ -10,6 +10,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
 /**
  * @group UserBitcoinAddresses
+ * @covers MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord
  *
  * @since 1.0.0
  *

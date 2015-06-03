@@ -2,10 +2,15 @@
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
+use User;
+use Danwe\Bitcoin\Address;
+use Datetime;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTest;
 
 /**
  * @group UserBitcoinAddresses
+ * @covers MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder
  *
  * @since 1.0.0
  *
@@ -13,6 +18,16 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
  * @author Daniel A. R. Werner
  */
 class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
+
+	public static $builderSetters = [
+		'id',
+		'bitcoinAddress',
+		'user',
+		'addedOn',
+		'exposedOn',
+		'addedThrough',
+		'purpose'
+	];
 
 	public function testConstruction() {
 		$this->assertInstanceOf(
@@ -78,6 +93,16 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * All setters should accept null without failing.
+	 */
+	public function testSettingNull() {
+		$builder = new UserBitcoinAddressRecordBuilder();
+		foreach( static::$builderSetters as $setter ) {
+			$this->assertBuildStepSetterAndGetterWorking( $builder, $setter, null );
+		}
+	}
+
+	/**
 	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithValidValues
 	 */
@@ -108,6 +133,41 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @dataProvider extendableObjectProvider
+	 */
+	public function testExtendReturnsNewInstance( $extendableObject ) {
+		$extendedBuilder = UserBitcoinAddressRecordBuilder::extend( $extendableObject );
+
+		$this->assertInstanceOf( 'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder', $extendedBuilder );
+		$this->assertTrue( $extendableObject !== $extendedBuilder, 'extended builder is not original object' );
+
+		$this->assertEquals( $extendableObject->getAddedOn(), $extendedBuilder->getAddedOn() );
+		$extendedBuilder->addedOn( new DateTime() );
+		$this->assertNotEquals( $extendableObject->getAddedOn(), $extendedBuilder->getAddedOn() );
+		//$extendableObject->getAddedOn() !== $extendedBuilder
+
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @depends testSettingUpBuilderWithValidValues
+	 */
+	public function testExtendWithBuilder( $builder, $builderBuildSteps ) {
+		$extendedBuilder = UserBitcoinAddressRecordBuilder::extend( $builder );
+		$this->assertBuilderEquals( $builder, $extendedBuilder );
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @depends testSettingUpBuilderWithValidValues
+	 */
+	public function testExtendWithBuiltInstance( $builder, $builderBuildSteps ) {
+		$builtInstance = $builder->build();
+		$extendedBuilder = UserBitcoinAddressRecordBuilder::extend( $builtInstance );
+		$this->assertBuilderEquals( $builder, $extendedBuilder );
+	}
+
+	/**
 	 * Returns the builder's getter member name based on a given build step name.
 	 *
 	 * @param string $buildStep
@@ -115,6 +175,15 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public static function getSettersGetter( $buildStep ) {
 		return 'get' . ucfirst( $buildStep );
+	}
+
+	public function assertBuilderEquals(
+		UserBitcoinAddressRecordBuilder $builder1,
+		UserBitcoinAddressRecordBuilder $builder2
+	) {
+		$s1 = serialize( $builder1 );
+		$s2 = serialize( $builder2 );
+		$this->assertEquals( $s1, $s2, 'builders in serialized form are equal' );
 	}
 
 	/**
@@ -165,5 +234,21 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 		foreach( $buildSteps as $buildStepSetter => $value ) {
 			$this->assertBuildStepSetterAndGetterWorking( $builder, $buildStepSetter, $value );
 		}
+	}
+
+	public static function extendableObjectProvider() {
+		return [
+			'"empty" UserBitcoinAddressRecordBuilder instance' => [
+				new UserBitcoinAddressRecordBuilder()
+			],
+			'UserBitcoinAddressRecord instance' => [
+				( new UserBitcoinAddressRecordBuilder() )
+					->id( 24 )
+					->user( User::newFromName( 'nobody' ) )
+					->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
+					->purpose( 'some purpose' )
+					->build()
+			],
+		];
 	}
 }

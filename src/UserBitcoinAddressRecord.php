@@ -17,7 +17,7 @@ use User;
  * @licence MIT License
  * @author Daniel A. R. Werner
  */
-class UserBitcoinAddressRecord implements UserBitcoinAddress {
+class UserBitcoinAddressRecord implements UserBitcoinAddress, ExtendableAsUserBitcoinAddressRecordBuilder {
 
 	/** @var int|null */
 	protected $id;
