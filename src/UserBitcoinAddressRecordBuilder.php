@@ -27,7 +27,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	/** @var string|null */
 	protected $id;
 
-	/** @var User */
+	/** @var User|null */
 	protected $user;
 
 	/** @var Address */
@@ -64,7 +64,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	}
 
 	/**
-	 * @return int
+	 * @return int|null
 	 */
 	public function getId() {
 		return $this->id;
@@ -85,7 +85,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	}
 
 	/**
-	 * @return User
+	 * @return User|null
 	 */
 	public function getUser() {
 		return $this->user;
@@ -106,7 +106,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	}
 
 	/**
-	 * @return Address
+	 * @return Address|null
 	 */
 	public function getBitcoinAddress() {
 		return $this->bitcoinAddress;
@@ -118,13 +118,16 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	 * @param DateTime|null $date
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function addedOn( DateTime $date = null ) {
+	public function addedOn( $date ) {
+		if( $date !== null && !( $date instanceof DateTime ) ) {
+			throw new InvalidArgumentException( 'date has to be a DateTime instance or null' );
+		}
 		$this->addedOn = $date;
 		return $this;
 	}
 
 	/**
-	 * @return DateTime
+	 * @return DateTime|null
 	 */
 	public function getAddedOn() {
 		return $this->addedOn;
@@ -137,7 +140,10 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	 * @param DateTime|null $date
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
-	public function exposedOn( DateTime $date = null ) {
+	public function exposedOn( $date ) {
+		if( $date !== null && !( $date instanceof DateTime ) ) {
+			throw new InvalidArgumentException( 'date has to be a DateTime instance or null' );
+		}
 		$this->exposedOn = $date;
 		return $this;
 	}

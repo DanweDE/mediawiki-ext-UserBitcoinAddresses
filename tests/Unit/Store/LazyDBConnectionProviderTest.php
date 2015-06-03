@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\SubPageList;
+namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Store;
 
 use MediaWiki\Ext\UserBitcoinAddresses\Store\DBConnectionProvider;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;

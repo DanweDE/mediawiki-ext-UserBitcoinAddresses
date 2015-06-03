@@ -1,6 +1,7 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
+use LogicException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
@@ -14,17 +15,17 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
  */
 interface UserBitcoinAddressRecordStore {
 	/**
-	 * Stores data based on a given UserBitcoinAddressRecord and returns a UserBitcoinAddressRecord
+	 * Stores data based on a given UserBitcoinAddressRecord. Returns an UserBitcoinAddressRecord
 	 * representing the stored data.
-	 * In addition to the provided data, the returned UserBitcoinAddressRecord will have an ID
-	 * assigned by the store as well as an "addedOn" date if none was provided via the builder.
+	 * In addition to the given UserBitcoinAddressRecord instance, the returned instance will have
+	 * an ID assigned by the store as well as an "addedOn" date if none was provided by the builder.
 	 *
-	 * @param UserBitcoinAddressRecordBuilder $recordBuilder
+	 * @param UserBitcoinAddressRecord $record
 	 * @returns UserBitcoinAddressRecord Represents the stored data.
 	 *
-	 * @throws LogicException If the builder's ID is not null.
+	 * @throws LogicException If the given instance's UserBitcoinAddressRecord::getId() is not null.
 	 */
-	public function add( UserBitcoinAddressRecordBuilder $recordBuilder );
+	public function add( UserBitcoinAddressRecord $record );
 
 	/**
 	 * Replaces data of a record known to the store with the given UserBitcoinAddressRecord's data.
