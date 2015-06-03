@@ -37,7 +37,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::buildStepsWithValidValuesProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::buildStepsWithValidValuesProvider
 	 */
 	public function testSetterGetterPairsWithValidValues( $buildStepSetter, $value ) {
 		$this->assertInternalType( 'string', $buildStepSetter );
@@ -47,7 +47,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::buildStepsWithInvalidValuesProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::buildStepsWithInvalidValuesProvider
 	 */
 	public function testSetterGetterPairsWithInvalidValues( $buildStepSetter, $invalidValue ) {
 		$this->assertInternalType( 'string', $buildStepSetter );
@@ -62,7 +62,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	 * Tests whether setting a value, then setting another value for the same build step is working
 	 * properly.
 	 *
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validValuesPerBuildStepProvider()
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validValuesPerBuildStepProvider()
 	 * @depends testSetterGetterPairsWithValidValues
 	 */
 	public function testSettingRepeatedly( $buildStepSetter, $validValues ) {
@@ -76,7 +76,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuilderStepsProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuilderStepsProvider
 	 * @depends testSetterGetterPairsWithValidValues
 	 */
 	public function testSettingUpBuilderWithValidValues( $buildSteps ) {
@@ -84,7 +84,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::invalidBuilderStepsProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::invalidBuilderStepsProvider
 	 * @depends testSetterGetterPairsWithValidValues
 	 */
 	public function testSettingUpBuilderWithInvalidValues( $buildSteps ) {
@@ -103,7 +103,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithValidValues
 	 */
 	public function testBuildFromValidBuildSteps( $builder, $builderBuildSteps ) {
@@ -114,7 +114,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::invalidBuildStateBuildersProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::invalidBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithInvalidValues
 	 */
 	public function testBuildFromInvalidBuildSteps( $builder, $builderBuildSteps, $buildException ) {
@@ -123,7 +123,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithInvalidValues
 	 */
 	public function testBuildMultipleTimesCreatesSeparateInstances( $builder, $builderBuildSteps, $buildException ) {
@@ -149,7 +149,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithValidValues
 	 */
 	public function testExtendWithBuilder( $builder, $builderBuildSteps ) {
@@ -158,7 +158,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::validBuildStateBuildersProvider
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuildStateBuildersProvider
 	 * @depends testSettingUpBuilderWithValidValues
 	 */
 	public function testExtendWithBuiltInstance( $builder, $builderBuildSteps ) {
