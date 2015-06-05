@@ -113,5 +113,69 @@ class UserBitcoinAddressRecordTestData {
 			]
 		];
 	}
-}
 
+	/**
+	 * @return array( [ UserBitcoinAddressRecord $instance, UserBitcoinAddressRecord $instanceCopy, UserBitcoinAddressRecord[] $otherInstances ] )
+	 */
+	public static function sameDataInstancesProvider() {
+		$baseInstanceBuilders = [
+			( new UserBitcoinAddressRecordBuilder() )
+				->id( 1 )
+				->user( User::newFromName( 'One' ) )
+				->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
+				->addedOn( null )
+				->exposedOn( null )
+				->addedThrough( null ),
+			( new UserBitcoinAddressRecordBuilder() )
+				->id( 2 )
+				->user( User::newFromName( 'One' ) )
+				->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
+				->addedOn( new DateTime( '2000-01-01 20:00' ) )
+				->exposedOn( new DateTime( '2010-01-01 20:00' ) )
+				->addedThrough( 'whatever' ),
+		];
+		$varietyValueSets = [
+			[ 'id' => 3 ],
+			[ 'user' => User::newFromName( 'Two' ) ],
+			[ 'bitcoinAddress' => new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' ) ],
+			[ 'addedOn' => new DateTime('2005-01-01 20:00') ],
+			[ 'exposedOn' => new DateTime('2020-01-01 20:00') ],
+			[ 'addedThrough' => 'something else' ],
+		];
+		$instances = [];
+		foreach( $baseInstanceBuilders as $baseId => $baseInstanceBuilder ) {
+			$baseInstanceName = 'base instance ' . ( $baseId + 1 );
+			$instances[ $baseInstanceName ] = $baseInstanceBuilder->build();
+
+			foreach( $varietyValueSets as $varietyValues ) {
+				$instanceBuilder = UserBitcoinAddressRecordBuilder::extend( $baseInstanceBuilder );
+
+				foreach( $varietyValues as $setter => $value ) {
+					$instanceBuilder->{ $setter }( $value );
+				}
+
+				$instanceName = implode( '() & ', array_keys( $varietyValues ) ) . '()';
+				$i = 0;
+				do {
+					$i++;
+					$instanceDescription = "instance with $instanceName " . ( $i > 1 ? "($i) " : '' )
+						. "differing from $baseInstanceName";
+				} while( array_key_exists( $instanceDescription, $instances ) );
+
+				$instances[ $instanceDescription ] = $instanceBuilder->build();
+			}
+		}
+		$cases = [];
+		foreach( $instances as $instanceDescription => $instance ) {
+			$otherInstances = $instances;
+			unset( $otherInstances[ $instanceDescription ] );
+
+			$cases[ $instanceDescription ] = [
+				$instance,
+				UserBitcoinAddressRecordBuilder::extend( $instance )->build(),
+				$otherInstances,
+			];
+		}
+		return $cases;
+	}
+}

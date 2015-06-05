@@ -136,15 +136,37 @@ class UserBitcoinAddressRecord implements UserBitcoinAddress, ExtendableAsUserBi
 	/**
 	 * Returns whether the given UserBitcoinAddressRecord equals the given one. This is the case if
 	 * the address as well as the user are equal. Other data has no influence on the comparison.
+	 *
+	 * @param UserBitcoinAddressRecord $other
+	 * @return bool
 	 */
-	public function equals( $other ) {
-		if( !( $other instanceof UserBitcoinAddressRecord ) ) {
-			return false;
-		}
+	public function equals( UserBitcoinAddressRecord $other ) {
 		if( $this === $other ) {
 			return true;
 		}
 		return $this->getUser()->equals( $other->getUser() )
 			&& $this->getBitcoinAddress()->equals( $other->getBitcoinAddress() );
+	}
+
+	/**
+	 * Goes further than equals() and checks whether this is actually the same record as another
+	 * given object. Does a comparison of all member values. Always returns false if one or both of
+	 * the given records has no ID.
+	 *
+	 * @param UserBitcoinAddressRecord $other
+	 * @return bool
+	 */
+	public function isSameAs( UserBitcoinAddressRecord $other ) {
+		if( ! $this->equals( $other ) ) {
+			return false;
+		}
+		if( $this->getId() === null ) {
+			return false;
+		}
+		return $this->getId()           === $other->getId()
+			&& $this->getAddedOn()      === $other->getAddedOn()
+			&& $this->getExposedOn()    === $other->getExposedOn()
+			&& $this->getAddedThrough() === $other->getAddedThrough()
+			&& $this->getPurpose()      === $other->getPurpose();
 	}
 }

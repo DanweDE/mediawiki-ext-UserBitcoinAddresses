@@ -79,4 +79,37 @@ class UserBitcoinAddressRecordTest extends \PHPUnit_Framework_TestCase {
 	public function testEqualsWithSameInstance( $instance, $builder ) {
 		$this->assertTrue( $instance->equals( $instance ) );
 	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::sameDataInstancesProvider
+	 */
+	public function testIsSameAs(
+		UserBitcoinAddressRecord $instance,
+		UserBitcoinAddressRecord $instanceCopy,
+		array $otherInstances
+	) {
+		$expectSame = $instance->getId() !== null;
+		$message = $expectSame
+			? 'both instances are equal'
+			: 'instances are not equal because they have no ID';
+
+		$this->assertTrue( $instance->isSameAs( $instanceCopy ) === $expectSame, $message );
+		$this->assertTrue( $instanceCopy->isSameAs( $instance ) === $expectSame );
+
+		foreach( $otherInstances as $description => $otherInstance ) {
+			$this->assertInternalType( 'string', $description );
+			$this->assertFalse( $instance->isSameAs( $otherInstance ), 'instance not same as ' . $description );
+		}
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::sameDataInstancesProvider
+	 */
+	public function testIsSameAsWithSameInstance(
+		UserBitcoinAddressRecord $instance,
+		UserBitcoinAddressRecord $instanceCopy,
+		array $otherInstances
+	) {
+		$this->assertTrue( $instance->isSameAs( $instance ) );
+	}
 }
