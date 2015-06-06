@@ -71,6 +71,7 @@ class UserBitcoinAddressRecordTest extends \PHPUnit_Framework_TestCase {
 		$expected
 	) {
 		$this->assertTrue( $instance1->equals( $instance2 ) === $expected );
+		$this->assertTrue( $instance2->equals( $instance1 ) === $expected );
 	}
 
 	/**
@@ -100,6 +101,26 @@ class UserBitcoinAddressRecordTest extends \PHPUnit_Framework_TestCase {
 			$this->assertInternalType( 'string', $description );
 			$this->assertFalse( $instance->isSameAs( $otherInstance ), 'instance not same as ' . $description );
 		}
+	}
+
+	public function testIsSameAsWithSameDatesButDifferentInstances() {
+		$date1a = new DateTime( '1976-11-11 11:00' );
+		$date1b = new DateTime( '1976-11-11 11:00' );
+		$date2a = new DateTime( '1990-01-01 1:00' );
+		$date2b = new DateTime( '1990-01-01 1:00' );
+
+		$builder = UserBitcoinAddressRecordBuilderTestData::validBuildStateBuildersProvider()[ 0 ][ 0 ];
+		$builder->id( 1 ); // just make sure some ID is set
+		$instance1 = $builder->addedOn( $date1a )->exposedOn( $date2a )->build();
+		$instance2 = $builder->addedOn( $date1b )->exposedOn( $date2b )->build();
+
+		$this->assertTrue(
+			$instance1->isSameAs( $instance2 ),
+			'instances with same values but different date instances are recognized as same'
+		);
+		$this->assertTrue(
+			$instance2->isSameAs( $instance1 )
+		);
 	}
 
 	/**

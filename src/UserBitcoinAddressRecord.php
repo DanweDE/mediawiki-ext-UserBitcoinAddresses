@@ -164,9 +164,24 @@ class UserBitcoinAddressRecord implements UserBitcoinAddress, ExtendableAsUserBi
 			return false;
 		}
 		return $this->getId()           === $other->getId()
-			&& $this->getAddedOn()      === $other->getAddedOn()
-			&& $this->getExposedOn()    === $other->getExposedOn()
+			&& $this->equalDatesOrNull( $this->getAddedOn(), $other->getAddedOn() )
+			&& $this->equalDatesOrNull( $this->getExposedOn(), $other->getExposedOn() )
 			&& $this->getAddedThrough() === $other->getAddedThrough()
 			&& $this->getPurpose()      === $other->getPurpose();
+	}
+
+	/**
+	 * @param DateTime|null $dateOrNull1
+	 * @param DateTime|null $dateOrNull2
+	 * @return bool
+	 */
+	protected final function equalDatesOrNull( $dateOrNull1, $dateOrNull2 ) {
+		if( $dateOrNull1 === $dateOrNull2 ) {
+			return true;
+		}
+		if( $dateOrNull1 === null || $dateOrNull2 === null ) {
+			return false;
+		}
+		return $dateOrNull1->diff( $dateOrNull2 )->format( '%a:%h:%i:%s' ) === '0:0:0:0';
 	}
 }

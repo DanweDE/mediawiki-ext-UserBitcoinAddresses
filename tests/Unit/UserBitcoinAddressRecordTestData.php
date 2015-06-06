@@ -35,55 +35,60 @@ class UserBitcoinAddressRecordTestData {
 	 * @return array( [ UserBitcoinAddressRecord, UserBitcoinAddressRecord, boolean $equal ], ... )
 	 */
 	public static function equalInstancesProvider() {
-		$user = User::newFromName( 'Dronte' );
-		$user2 = User::newFromName( 'Stork' );
-		$addr = new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' );
-		$addr2 = new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' );
+		$user1   = User::newFromName( 'Dronte' );
+		$user1_2 = User::newFromName( 'Dronte' );
+		$user2   = User::newFromName( 'Stork' );
+
+		$addr1   = new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' );
+		$addr1_2 = new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' );
+		$addr2   = new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' );
+
+		$date = new DateTime();
 
 		return [
 			[
 				( new UserBitcoinAddressRecordBuilder() )
 					->id( 42 )
-					->user( $user )
-					->bitcoinAddress( $addr )
-					->addedOn( new Datetime() )
-					->exposedOn( new DateTime() )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
+					->addedOn( $date )
+					->exposedOn( $date )
 					->addedThrough( 'whatever' )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
 					->id( 24 )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1_2 )
+					->bitcoinAddress( $addr1 )
 					->purpose( 'some purpose' )
 					->build(),
 				true
 			], [
 				( new UserBitcoinAddressRecordBuilder() )
 					->id( 42 )
-					->user( $user )
-					->bitcoinAddress( $addr )
-					->addedOn( new Datetime() )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
+					->addedOn( $date )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
 					->id( null )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1 )
+					->bitcoinAddress( $addr1_2 )
 					->build(),
 				true
 			], [
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1_2 )
+					->bitcoinAddress( $addr1_2 )
 					->build(),
 				true
 			], [
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
 					->user( $user2 )
@@ -92,22 +97,22 @@ class UserBitcoinAddressRecordTestData {
 				false
 			], [
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
+					->user( $user1 )
 					->bitcoinAddress( $addr2 )
 					->build(),
 				false
 			], [
 				( new UserBitcoinAddressRecordBuilder() )
-					->user( $user )
-					->bitcoinAddress( $addr )
+					->user( $user1 )
+					->bitcoinAddress( $addr1 )
 					->build(),
 				( new UserBitcoinAddressRecordBuilder() )
 					->user( $user2 )
-					->bitcoinAddress( $addr )
+					->bitcoinAddress( $addr1 )
 					->build(),
 				false
 			]
@@ -130,18 +135,39 @@ class UserBitcoinAddressRecordTestData {
 				->id( 2 )
 				->user( User::newFromName( 'One' ) )
 				->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
-				->addedOn( new DateTime( '2000-01-01 20:00' ) )
-				->exposedOn( new DateTime( '2010-01-01 20:00' ) )
+				->addedOn( new DateTime( '1980-01-01 1:00' ) )
+				->exposedOn( new DateTime( '1990-01-01 2:00' ) )
 				->addedThrough( 'whatever' ),
 		];
 		$varietyValueSets = [
 			[ 'id' => 3 ],
 			[ 'user' => User::newFromName( 'Two' ) ],
 			[ 'bitcoinAddress' => new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' ) ],
-			[ 'addedOn' => new DateTime('2005-01-01 20:00') ],
-			[ 'exposedOn' => new DateTime('2020-01-01 20:00') ],
-			[ 'addedThrough' => 'something else' ],
+			[ 'addedOn' => new DateTime('1985-05-03 1:00') ],
+			[ 'exposedOn' => new DateTime('1995-07-02 2:00') ],
+			[ 'addedThrough' => 'something ese' ],
 		];
+
+		$instances = self::combineBaseInstancesWithVariations( $baseInstanceBuilders, $varietyValueSets );
+		$cases = [];
+
+		foreach( $instances as $instanceDescription => $instance ) {
+			$otherInstances = $instances;
+			unset( $otherInstances[ $instanceDescription ] );
+
+			$cases[ $instanceDescription ] = [
+				$instance,
+				UserBitcoinAddressRecordBuilder::extend( $instance )->build(),
+				$otherInstances,
+			];
+		}
+		return $cases;
+	}
+
+	protected final static function combineBaseInstancesWithVariations(
+		array $baseInstanceBuilders,
+		array $varietyValueSets
+	) {
 		$instances = [];
 		foreach( $baseInstanceBuilders as $baseId => $baseInstanceBuilder ) {
 			$baseInstanceName = 'base instance ' . ( $baseId + 1 );
@@ -165,17 +191,6 @@ class UserBitcoinAddressRecordTestData {
 				$instances[ $instanceDescription ] = $instanceBuilder->build();
 			}
 		}
-		$cases = [];
-		foreach( $instances as $instanceDescription => $instance ) {
-			$otherInstances = $instances;
-			unset( $otherInstances[ $instanceDescription ] );
-
-			$cases[ $instanceDescription ] = [
-				$instance,
-				UserBitcoinAddressRecordBuilder::extend( $instance )->build(),
-				$otherInstances,
-			];
-		}
-		return $cases;
+		return $instances;
 	}
 }

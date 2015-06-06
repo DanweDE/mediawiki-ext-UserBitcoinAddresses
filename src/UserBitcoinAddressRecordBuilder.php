@@ -78,7 +78,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	 */
 	public function user( $user ) {
 		if( $user !== null && !( $user instanceof User ) ) {
-			throw new InvalidArgumentException( '$user has to be as User instance or null' );
+			throw new InvalidArgumentException( '$user has to be an User instance or null' );
 		}
 		$this->user = $user;
 		return $this;
@@ -99,7 +99,7 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	 */
 	public function bitcoinAddress( $address ) {
 		if( $address !== null && !( $address instanceof Address ) ) {
-			throw new InvalidArgumentException( '$user has to be as User instance or null' );
+			throw new InvalidArgumentException( 'address has to be an User instance or null' );
 		}
 		$this->bitcoinAddress = $address;
 		return $this;
