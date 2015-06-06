@@ -31,7 +31,7 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	 */
 	public function testAdd( UBARecord $instance, UBARBuilder $builder ) {
 		$store = $this->newInstance();
-		$instance = UBARBuilder::extend( $instance )->id( null )->build();
+		$instance = $this->resetRecordId( $instance );
 		$updatedInstance = $store->add( $instance );
 
 		$this->assertTrue(
@@ -42,6 +42,38 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 			'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord',
 			$updatedInstance
 		);
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
+	 *
+	 * @expectedException LogicException
+	 */
+	public function testAddInstanceWithId( UBARecord $instance, UBARBuilder $builder ) {
+		$instance = $builder->id( 42 )->build();
+		$store = $this->newInstance();
+		$store->add( $instance );
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
+	 */
+	public function testFetchById( UBARecord $instance, UBARBuilder $builder ) {
+		$store = $this->newInstance();
+		$instance = $this->resetRecordId( $instance );
+		$updatedInstance = $store->add( $instance );
+		$fetchedInstance = $store->fetchById( $updatedInstance->getId() );
+
+		$this->assertNotEquals( null, $fetchedInstance );
+		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ) );
+	}
+
+	/**
+	 * @param UBARecord $record
+	 * @return UBARecord
+	 */
+	protected function resetRecordId( UBARecord $record ) {
+		return UBARBuilder::extend( $record )->id( null )->build();
 	}
 
 	/**

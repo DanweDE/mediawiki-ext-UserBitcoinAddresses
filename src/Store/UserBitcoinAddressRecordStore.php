@@ -37,6 +37,14 @@ interface UserBitcoinAddressRecordStore {
 	public function update( $record );
 
 	/**
+	 * Returns a stored UserBitcoinAddressRecord instance with the given ID or null if none exists.
+	 *
+	 * @param int $id
+	 * @return UserBitcoinAddressRecord|null
+	 */
+	public function fetchById( $id );
+
+	/**
 	 * Returns an array with all UserBitcoinAddressRecord instances for a given user. Can be an
 	 * empty array if there are not entries for the user.
 	 *
