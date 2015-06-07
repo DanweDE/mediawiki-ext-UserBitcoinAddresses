@@ -27,7 +27,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 	 * @dataProvider formInputAndExpectedOutputProvider
 	 */
 	public function testValidAndInvalidAddressesInserted( $input, $result ) {
-		$mocker = new Mocker( $this );
+		$mocker = new Mocker();
 		$user = $mocker->newAuthorizedUser();
 
 		$request = new FauxRequest( array(
