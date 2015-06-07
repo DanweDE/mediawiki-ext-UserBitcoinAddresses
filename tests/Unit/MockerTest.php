@@ -18,17 +18,24 @@ class MockerTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @dataProvider newAuthorizedUsersProvider
 	 */
-	public function testNewAuthorizedUser( User $user, $expected ) {
+	public function testNewUser( User $user, $expected ) {
 		$this->assertInstanceOf( 'User', $user );
 
 		$this->assertFalse( $user->isAnon(),
 			'mocked user instance is not an anonymous user' );
 
-		$this->assertTrue( $user->isAllowed( 'edit' ),
-			'mocked user has edit rights' );
-
 		$this->assertEquals( $user->getId(),   $expected[ 'id' ] );
 		$this->assertEquals( $user->getName(), $expected[ 'name' ] );
+	}
+
+	/**
+	 * @dataProvider newAuthorizedUsersProvider
+	 */
+	public function testNewAuthorizedUser( User $user, $expected ) {
+		$this->testNewUser( $user, $expected );
+
+		$this->assertTrue( $user->isAllowed( 'edit' ),
+			'mocked user has edit rights' );
 	}
 
 	public function testGetNextContinuousUserId() {

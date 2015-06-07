@@ -19,24 +19,53 @@ class Mocker extends PHPUnit_Framework_TestCase {
 	protected static $continuousUserId = 1;
 
 	/**
+	 * Creates a MediaWiki User object with mocked methods to behave like a non-anonymous user.
+	 *
+	 * @return User
+	 */
+	public function newUser( $name = null ) {
+		$user = $this->newUserMock( $this->getDecorateUserMockMethods() );
+
+		$this->decorateUserMock( $user, $name );
+
+		return $user;
+	}
+
+	/**
 	 * Creates a MediaWiki User object with mocked methods to behave like a non-anonymous user
 	 * with all rights without actually adding it to the database.
 	 *
 	 * @return User
 	 */
 	public function newAuthorizedUser( $name = null ) {
-		$id = static::$continuousUserId++;
+		$user = $this->newUserMock( $this->getDecorateUserMockMethods() + [ 'isAllowed' ] );
 
-		$user = $this
-			->getMockBuilder( 'User' )
-			->setMethods( [ 'isAnon', 'isAllowed', 'getId', 'getName' ] )
-			->getMock();
-		$user->expects( $this->any() )
-			->method( 'isAnon' )
-			->will( $this->returnValue( false ) );
+		$this->decorateUserMock( $user, $name );
+
 		$user->expects( $this->any() )
 			->method( 'isAllowed' )
 			->will( $this->returnValue( true ) );
+
+		return $user;
+	}
+
+	public function getNextContinuousUserId() {
+		return static::$continuousUserId;
+	}
+
+	protected function newUserMock( $methods = [] ) {
+		return $this
+			->getMockBuilder( 'User' )
+			->setMethods( $methods )
+			->getMock();
+	}
+
+	protected function decorateUserMock( User $user, $name ) {
+		$id = static::$continuousUserId++;
+
+		$user->expects( $this->any() )
+			->method( 'isAnon' )
+			->will( $this->returnValue( false ) );
 		$user->expects( $this->any() )
 			->method( 'getId' )
 			->will( $this->returnValue( $id ) );
@@ -45,11 +74,9 @@ class Mocker extends PHPUnit_Framework_TestCase {
 			->will( $this
 				->returnValue(
 					is_string( $name ) ? $name : 'Mocked User ' . $id ) );
-
-		return $user;
 	}
 
-	public function getNextContinuousUserId() {
-		return static::$continuousUserId;
+	protected function getDecorateUserMockMethods() {
+		return [ 'isAnon', 'getId', 'getName' ];
 	}
 }
