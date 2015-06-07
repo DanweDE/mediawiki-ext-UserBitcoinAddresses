@@ -20,10 +20,11 @@ class UserBitcoinAddressRecordBuilderTestData {
 	 * @return array
 	 */
 	public static function validBuilderStepsProvider() {
+		$mocker = new Mocker();
 		return array_chunk ( [
 			[
 				'id' => null,
-				'user' => User::newFromId( 42 ),
+				'user' => $mocker->newUser(),
 				'bitcoinAddress' => new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ),
 				'addedOn' => new Datetime(),
 				'exposedOn' => ( new Datetime() )->add( new \DateInterval( 'PT9M30S' ) ),
@@ -31,16 +32,16 @@ class UserBitcoinAddressRecordBuilderTestData {
 				'purpose' => 'none',
 			], [
 				'id' => 42,
-				'user' => User::newFromId( 0 ),
+				'user' => $mocker->newUser(),
 				'bitcoinAddress' => new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' ),
 				'addedOn' => new Datetime(),
 				'exposedOn' => null,
 				'addedThrough' => 'foo',
 			], [
-				'user' => User::newFromId( 0 ),
+				'user' => $mocker->newUser(),
 				'bitcoinAddress' => new Address( '13p1ijLwsnrcuyqcTvJXkq2ASdXqcnEBLE' ),
 			], [
-				'user' => User::newFromId( 1337 ),
+				'user' => $mocker->newUser(),
 				'bitcoinAddress' => new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ),
 				'addedOn' => new Datetime(),
 				'exposedOn' => new Datetime(),
@@ -55,6 +56,7 @@ class UserBitcoinAddressRecordBuilderTestData {
 	 * @return array
 	 */
 	public static function invalidBuilderStepsProvider() {
+		$mocker = new Mocker();
 		return [
 			[
 				[],
@@ -67,12 +69,12 @@ class UserBitcoinAddressRecordBuilderTestData {
 				'InvalidArgumentException' // No user!
 			], [
 				[
-					'user' => User::newFromId( 42 ),
+					'user' => $mocker->newUser(),
 				],
 				'InvalidArgumentException' // No bitcoinAddress!
 			], [
 				[
-					'user' => User::newFromId( 42 ),
+					'user' => $mocker->newUser(),
 					'bitcoinAddress' => new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ),
 					'addedOn' => ( new Datetime() )->add( new \DateInterval( 'PT9M30S' ) ),
 					'exposedOn' => new Datetime(),
@@ -95,7 +97,7 @@ class UserBitcoinAddressRecordBuilderTestData {
 			[ 'id', -42 ],
 			[ 'addedThrough', array() ],
 			[ 'addedThrough', false ],
-			// Can't test for user(), bitcionAddress(), addedOn() and exposedOn() since they are
+			// Can't test for user(), bitcoinAddress(), addedOn() and exposedOn() since they are
 			// using type hints. Violations would result in fatal error (not cachable by PhpUnit).
 		];
 	}

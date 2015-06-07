@@ -237,6 +237,8 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public static function extendableObjectProvider() {
+		$mocker = new Mocker();
+
 		return [
 			'"empty" UserBitcoinAddressRecordBuilder instance' => [
 				new UserBitcoinAddressRecordBuilder()
@@ -244,7 +246,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 			'UserBitcoinAddressRecord instance' => [
 				( new UserBitcoinAddressRecordBuilder() )
 					->id( 24 )
-					->user( User::newFromName( 'nobody' ) )
+					->user( $mocker->newUser( 'nobody' ) )
 					->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
 					->purpose( 'some purpose' )
 					->build()
@@ -252,3 +254,4 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 		];
 	}
 }
+

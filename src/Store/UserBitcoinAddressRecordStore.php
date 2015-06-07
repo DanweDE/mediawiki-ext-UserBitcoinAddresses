@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 use LogicException;
+use User;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
@@ -51,5 +52,5 @@ interface UserBitcoinAddressRecordStore {
 	 * @param int $userId
 	 * @returns UserBitcoinAddressRecord[]
 	 */
-	public function fetchAllForUser( $userId );
+	public function fetchAllForUser( User $user );
 }

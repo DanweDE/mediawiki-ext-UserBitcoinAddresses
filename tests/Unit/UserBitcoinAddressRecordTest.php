@@ -2,7 +2,6 @@
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
-use User;
 use Danwe\Bitcoin\Address;
 use Datetime;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;

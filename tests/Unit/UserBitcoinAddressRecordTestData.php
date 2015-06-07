@@ -2,12 +2,10 @@
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
-use User;
 use Danwe\Bitcoin\Address;
 use Datetime;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData;
 
 /**
  * Data providers for UserBitcoinAddressRecord related tests.
@@ -35,9 +33,11 @@ class UserBitcoinAddressRecordTestData {
 	 * @return array( [ UserBitcoinAddressRecord, UserBitcoinAddressRecord, boolean $equal ], ... )
 	 */
 	public static function equalInstancesProvider() {
-		$user1   = User::newFromName( 'Dronte' );
-		$user1_2 = User::newFromName( 'Dronte' );
-		$user2   = User::newFromName( 'Stork' );
+		$mocker = new Mocker();
+
+		$user1   = $mocker->newUser( 'Dronte' );
+		$user1_2 = $mocker->newUser( 'Dronte' );
+		$user2   = $mocker->newUser( 'Stork' );
 
 		$addr1   = new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' );
 		$addr1_2 = new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' );
@@ -123,17 +123,20 @@ class UserBitcoinAddressRecordTestData {
 	 * @return array( [ UserBitcoinAddressRecord $instance, UserBitcoinAddressRecord $instanceCopy, UserBitcoinAddressRecord[] $otherInstances ] )
 	 */
 	public static function sameDataInstancesProvider() {
+		$mocker = new Mocker();
+		$user = $mocker->newUser();
+
 		$baseInstanceBuilders = [
 			( new UserBitcoinAddressRecordBuilder() )
 				->id( 1 )
-				->user( User::newFromName( 'One' ) )
+				->user( $user )
 				->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
 				->addedOn( null )
 				->exposedOn( null )
 				->addedThrough( null ),
 			( new UserBitcoinAddressRecordBuilder() )
 				->id( 2 )
-				->user( User::newFromName( 'One' ) )
+				->user( $user )
 				->bitcoinAddress( new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ) )
 				->addedOn( new DateTime( '1980-01-01 1:00' ) )
 				->exposedOn( new DateTime( '1990-01-01 2:00' ) )
@@ -141,7 +144,7 @@ class UserBitcoinAddressRecordTestData {
 		];
 		$varietyValueSets = [
 			[ 'id' => 3 ],
-			[ 'user' => User::newFromName( 'Two' ) ],
+			[ 'user' => $mocker->newUser( 'Two' ) ],
 			[ 'bitcoinAddress' => new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' ) ],
 			[ 'addedOn' => new DateTime('1985-05-03 1:00') ],
 			[ 'exposedOn' => new DateTime('1995-07-02 2:00') ],

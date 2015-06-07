@@ -3,8 +3,10 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 use DatabaseBase;
 use LogicException;
+use InvalidArgumentException;
 use User;
 use DateTime;
+use stdClass;
 use Danwe\Bitcoin\Address as BitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
@@ -52,11 +54,16 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 
 	/**
 	 * @see UserBitcoinAddressRecordStore::add()
+	 *
+	 * @throws InvalidArgumentException If given user is anonymous.
 	 */
 	public function add( UserBitcoinAddressRecord $record ) {
 		if( $record->getId() !== null ) {
 			throw new LogicException(
 				'the UserBitcoinAddressRecordBuilder\'s ID is expected to be null' );
+		}
+		if( $record->getUser()->isAnon() ) {
+			throw new InvalidArgumentException( 'expected $record to have a non-anonymous user' );
 		}
 
 		$recordBuilder = UserBitcoinAddressRecordBuilder::extend( $record );
@@ -121,7 +128,7 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	/**
 	 * @see UserBitcoinAddressRecordStore::fetchAllForUser()
 	 */
-	public function fetchAllForUser( $userId ) {
+	public function fetchAllForUser( User $user ) {
 		// TODO
 	}
 
