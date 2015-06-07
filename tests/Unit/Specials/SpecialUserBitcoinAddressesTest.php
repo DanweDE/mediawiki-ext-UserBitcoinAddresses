@@ -5,10 +5,12 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Specials;
 use MediaWikiTestCase;
 use FauxRequest;
 use MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Mocker;
 
 /**
  * @group UserBitcoinAddresses
  * @group SpecialPage
+ * @group UserBitcoinAddressesSpecialPage
  *
  * @since 1.0.0
  *
@@ -25,17 +27,8 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 	 * @dataProvider formInputAndExpectedOutputProvider
 	 */
 	public function testValidAndInvalidAddressesInserted( $input, $result ) {
-		$user = $this
-			->getMockBuilder( 'User' )
-			->setMethods( [ 'isAnon', 'isAllowed' ])
-			->setConstructorArgs( [ 'SpecialUserBitcoinAddressesTestUser' ] )
-			->getMock();
-		$user->expects( $this->any() )
-			->method( 'isAnon' )
-			->will( $this->returnValue( false ) );
-		$user->expects( $this->any() )
-			->method( 'isAllowed' )
-			->will( $this->returnValue( true ) );
+		$mocker = new Mocker( $this );
+		$user = $mocker->newAuthorizedUser();
 
 		$request = new FauxRequest( array(
 			'wpaddresses' => $input[ 'addresses' ],
