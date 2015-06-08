@@ -89,6 +89,25 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	}
 
 	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
+	 */
+	public function testFetchByUserBtcAddress( UBARecord $instance, UBARBuilder $builder ) {
+		$store = $this->newStore();
+		$instance = $this->recycleInstance( $instance );
+		$updatedInstance = $store->add( $instance );
+
+		$fetchedInstance = $store->fetchByUserBtcAddress(
+			( new UBARBuilder )
+				->bitcoinAddress( $updatedInstance->getBitcoinAddress() )
+				->user( $updatedInstance->getUser() )
+				->build()
+		);
+
+		$this->assertNotEquals( null, $fetchedInstance );
+		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ) );
+	}
+
+	/**
 	 * @dataProvider recordsByUsersInAStoreTestSetupsProvider
 	 */
 	public function testFetchAllForUser( $testSetup ) {

@@ -8,6 +8,7 @@ use User;
 use DateTime;
 use stdClass;
 use Danwe\Bitcoin\Address as BitcoinAddress;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
@@ -95,13 +96,35 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	 * @see UserBitcoinAddressRecordStore::fetchById()
 	 */
 	public function fetchById( $id ) {
+		return
+			$this->fetchSingleInstanceByConditions( [
+				'userbtcaddr_id' => $id,
+			] );
+	}
+
+	/**
+	 * @see UserBitcoinAddressRecordStore::fetchByUserBtcAddress()
+	 */
+	public function fetchByUserBtcAddress( UserBitcoinAddress $userBitcoinAddress ) {
+		return
+			$this->fetchSingleInstanceByConditions( [
+				'userbtcaddr_user_id' => $userBitcoinAddress->getUser()->getId(),
+				'userbtcaddr_address' => $userBitcoinAddress->getBitcoinAddress()->asString(),
+			] );
+	}
+
+	/**
+	 * @param array $conditions DatabaseBase::selectRow 3rd argument compatible conditions.
+	 * @return UserBitcoinAddressRecord|null
+	 */
+	protected function fetchSingleInstanceByConditions( array $conditions ) {
 		$db = $this->dbSlaveProvider->getConnection();
 		$fields = self::$instanceFields;
 
 		$row = $db->selectRow(
 			'user_bitcoin_addresses',
 			$fields,
-			[ 'userbtcaddr_id' => $id ],
+			$conditions,
 			__METHOD__
 		);
 		if( $row === false ) {

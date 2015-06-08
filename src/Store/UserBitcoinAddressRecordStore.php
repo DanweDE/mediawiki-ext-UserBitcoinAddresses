@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 use LogicException;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use User;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
@@ -44,6 +45,15 @@ interface UserBitcoinAddressRecordStore {
 	 * @return UserBitcoinAddressRecord|null
 	 */
 	public function fetchById( $id );
+
+	/**
+	 * Returns a stored UserBitcoinAddressRecord instance with the given user and bitcoin address
+	 * or null if none exists.
+	 *
+	 * @param UserBitcoinAddress $userBitcoinAddress
+	 * @return UserBitcoinAddressRecord|null
+	 */
+	public function fetchByUserBtcAddress( UserBitcoinAddress $userBitcoinAddress );
 
 	/**
 	 * Returns an array with all UserBitcoinAddressRecord instances for a given user. Can be an
