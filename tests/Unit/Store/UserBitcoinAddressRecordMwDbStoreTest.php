@@ -89,15 +89,10 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * TODO: If bug https://phabricator.wikimedia.org/T101696 got solved, use @ dataProvider instead!
+	 * @dataProvider recordsByUsersInAStoreTestSetupsProvider
 	 */
-	public function testFetchAllForUser() {
-		foreach( $this->recordsByUsersInAStoreProvider() as $case ) {
-			$this->innerTestFetchAllForUser( $case[0], $case[1], $case[2] );
-		}
-	}
-
-	protected function innerTestFetchAllForUser( UBARStore $store, User $user, array $usersAddresses ) {
+	public function testFetchAllForUser( $testSetup ) {
+		list( $store, $user, $usersAddresses ) = $testSetup();
 		assert( $user->isAnon() === false );
 
 		$usersAddressesLength = count( $usersAddresses );
@@ -163,43 +158,37 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * IMPORTANT: Don't use this with actual @dataProvider. Due to bug https://phabricator.wikimedia.org/T101696
-	 *            the created objects would end up in the production db rather than in the test db.
+	 * TODO: If bug https://phabricator.wikimedia.org/T101696 got solved, don't return setup
+	 *       function but instead provide the setup's values.
 	 *
-	 * For each case there will be three parameters provided:
+	 * Each case consists of a single test case setup function.
+	 * When executed, an array with three values will be provided:
 	 *  - A UBARSTore with several UBARecord instances.
 	 *  - A User instance.
 	 *  - An array of all UBARecord instances of the given user expected to be in the given store.
 	 *
-	 * @return array( array( UBARSTore $allUsersAddresses, User $user, UBARecord[] $usersAddresses ), ... )
+	 * @return array( array( Function $testSetup ), ... )
 	 */
-	public static function recordsByUsersInAStoreProvider() {
-		// make strong user names since calling the provider n times would result in the same
-		// users being used in several tests and there would be n times the user addresses in the
-		// MW database than anticipated.
-		static $id = 0;
-		$id++;
-		$time = time();
-		$userPrefix = "recordsByUsersInAStoreProvider$id $time";
-		$userNames = [
-			"$userPrefix User 1",
-			"$userPrefix User 3",
-			"$userPrefix User 2",
-		];
+	public static function recordsByUsersInAStoreTestSetupsProvider() {
+		$static = __CLASS__;
+		$store = null;
+		$setups = [];
+		$usersAndBuilders = self::getUniqueUserNamesWithBuilders();
 
-		$store = static::newStore();
-		$cases = [];
-
-		foreach( $userNames as $userName ) {
+		foreach( $usersAndBuilders as $userName => $recordBuilders ) {
+			$setups[ "Setup with instances for user $userName" ] =
+				function() use( $static, &$store, $userName, $recordBuilders )
+		{
+			if( !$store ) {
+				$store = $static::newStore();
+			}
+			// Create user in db within setup function, tricking bug https://phabricator.wikimedia.org/T101696
 			$user = User::createNew( $userName ); // If null, user already exists...
 			assert( $user !== null ); // Should never happen due to strong user name anyhow.
-			//assert( $user->getName() === $userName );
-			$user->load();
 
 			$userAddresses = [];
 
-			foreach( UserBitcoinAddressRecordTestData::instancesAndBuildersProvider() as $case ) {
-				$builder = $case[ 1 ];
+			foreach( $recordBuilders as $builder ) {
 				assert( $builder instanceof UBARBuilder );
 
 				$instance = $builder
@@ -208,22 +197,37 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 					->build();
 
 				$userAddresses[] = $store->add( $instance );
-
-				$fetched = $store->fetchById( $userAddresses[ count( $userAddresses ) - 1 ]->getId() );
-				assert( $fetched instanceof UBARecord );
 			}
-			$fetchedAll = $store->fetchAllForUser( $user );
-			assert(
-				'count( $fetchedAll ) === count( $userAddresses )',
-				count( $fetchedAll ) . '_' . count( $userAddresses )
-			);
 
-			$cases[ "instances for user $userName" ] = [
+			return [
 				$store,
 				$user,
 				$userAddresses,
 			];
+		}; }
+
+		return array_chunk( $setups, 1 );
+	}
+
+	private static function getUniqueUserNamesWithBuilders() {
+		// make strong user names since calling the provider n times would result in the same
+		// users being used in several tests and there would be n times the user addresses in the
+		// MW database than anticipated.
+		static $id = 0;
+		$id++;
+		$time = time();
+		$userPrefix = "recordsByUsersInAStoreProvider$id-$time";
+
+		foreach( UserBitcoinAddressRecordTestData::instancesAndBuildersProvider() as $builderCase ) {
+			$builders[] =  $builderCase[ 1 ];
 		}
-		return $cases;
+
+		return [
+			"$userPrefix User 1" => $builders,
+			"$userPrefix User 2 (without addresses)" => [],
+			"$userPrefix User 3" => $builders,
+			"$userPrefix User 4 (without addresses)" => [],
+			"$userPrefix User 5" => $builders,
+		];
 	}
 }
