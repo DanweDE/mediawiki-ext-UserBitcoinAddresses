@@ -66,6 +66,10 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 		if( $record->getUser()->isAnon() ) {
 			throw new InvalidArgumentException( 'expected $record to have a non-anonymous user' );
 		}
+		$equalStoredRecord = $this->fetchByUserBtcAddress( $record );
+		if( $equalStoredRecord ) {
+			throw new InstanceAlreadyStoredException( $record, $equalStoredRecord );
+		}
 
 		$recordBuilder = UserBitcoinAddressRecordBuilder::extend( $record );
 

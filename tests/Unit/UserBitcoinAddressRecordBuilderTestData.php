@@ -42,7 +42,7 @@ class UserBitcoinAddressRecordBuilderTestData {
 				'bitcoinAddress' => new Address( '13p1ijLwsnrcuyqcTvJXkq2ASdXqcnEBLE' ),
 			], [
 				'user' => $mocker->newUser(),
-				'bitcoinAddress' => new Address( '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv' ),
+				'bitcoinAddress' => new Address( '1JwMWBVLtiqtscbaRHai4pqHokhFCbtoB4' ),
 				'addedOn' => new Datetime(),
 				'exposedOn' => new Datetime(),
 			],

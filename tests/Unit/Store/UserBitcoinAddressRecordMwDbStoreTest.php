@@ -6,14 +6,16 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 use MediaWikiTestCase;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARStore;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
 use User;
+use Danwe\Bitcoin\Address;
 
 /**
  * @group UserBitcoinAddresses
  * @group Database
- * @covers MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordMwDbStore
+ * @covers MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore
  *
  * @since 1.0.0
  *
@@ -51,12 +53,30 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	 *
 	 * @expectedException LogicException
 	 */
-	public function testAddInstanceWithId( UBARecord $instance, UBARBuilder $builder ) {
+	public function testAddWithInstantWhichHasAnId( UBARecord $instance, UBARBuilder $builder ) {
 		$instance = UBARBuilder::extend( $this->recycleInstance( $instance ) )
 			->id( 42 )
 			->build();
 
 		$this->newStore()->add( $instance );
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
+	 */
+	public function testAddWithAlreadyStoredInstance( UBARecord $instance, UBARBuilder $builder ) {
+		$instance = $this->recycleInstance( $instance );
+		$this->newStore()->add( $instance );
+
+		try{
+			$this->newStore()->add( $instance );
+		} catch( InstanceAlreadyStoredException $e ) {
+			$this->assertTrue( $e->getStoreAttemptInstance() === $instance );
+			$this->assertTrue( $e->getAlreadyStoredInstance()->equals( $instance ) );
+
+			return;
+		}
+		$this->assertTrue( false, 'no exception has been thrown for second add()' );
 	}
 
 	/**
@@ -82,10 +102,16 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 		$store = $this->newStore();
 		$instance = $this->recycleInstance( $instance );
 		$updatedInstance = $store->add( $instance );
-		$fetchedInstance = $store->fetchById( $updatedInstance->getId() );
+		$addedInstanceId = $updatedInstance->getId();
+
+		$fetchedInstance = $store->fetchById( $addedInstanceId );
 
 		$this->assertNotEquals( null, $fetchedInstance );
-		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ) );
+		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ),
+			'fetched instance is same as the one returned by add() previously');
+
+		$this->assertEquals( null, $store->fetchById( $addedInstanceId + 1 ),
+			'can not fetch if used id is bigger than the one of the last added instance.');
 	}
 
 	/**
@@ -104,7 +130,40 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 		);
 
 		$this->assertNotEquals( null, $fetchedInstance );
-		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ) );
+		$this->assertTrue( $fetchedInstance->isSameAs( $updatedInstance ),
+			'fetched instance is same as the one returned by add() previously' );
+	}
+
+	public function testFetchByUserBtcAddressWithNewlyCreatedUser() {
+		$fetchedValue = $this->newStore()->fetchByUserBtcAddress(
+			( new UBARBuilder )
+				->bitcoinAddress( new Address( '13p1ijLwsnrcuyqcTvJXkq2ASdXqcnEBLE' ) )
+				->user( User::createNew( 'User ' . __METHOD__ . time() ) )
+				->build()
+		);
+		$this->assertEquals( null, $fetchedValue,
+			'null is returned if UserBitcoinAddress is not equal to any UserBitcoinAddressRecord '
+				. 'within the store (based on user)' );
+	}
+
+	public function testFetchByUserBtcAddressWithAddressUnusedByUser() {
+		$store = $this->newStore();
+		$builder = ( new UBARBuilder )
+			->bitcoinAddress( new Address( '13p1ijLwsnrcuyqcTvJXkq2ASdXqcnEBLE' ) )
+			->user( User::createNew( 'User ' . __METHOD__ . time() ) );
+
+		$instance = $builder->build();
+		$store->add( $instance );
+
+		$fetchedValue = $store->fetchByUserBtcAddress(
+			$builder
+				->bitcoinAddress( new Address( '19dcawoKcZdQz365WpXWMhX6QCUpR9SY4r' ) )
+				->build()
+		);
+
+		$this->assertEquals( null, $fetchedValue,
+			'null is returned if UserBitcoinAddress is not equal to any UserBitcoinAddressRecord '
+				. 'within the store (based on address).' );
 	}
 
 	/**

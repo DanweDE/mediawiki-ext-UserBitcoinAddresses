@@ -26,6 +26,8 @@ interface UserBitcoinAddressRecordStore {
 	 * @returns UserBitcoinAddressRecord Represents the stored data.
 	 *
 	 * @throws LogicException If the given instance's UserBitcoinAddressRecord::getId() is not null.
+	 * @throws InstanceAlreadyStoredException If an equivalent instance has already
+	 *         been stored.
 	 */
 	public function add( UserBitcoinAddressRecord $record );
 
