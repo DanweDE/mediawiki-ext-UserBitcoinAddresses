@@ -108,6 +108,36 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 			return null;
 		}
 
+		return $this->buildUserBitcoinAddressRecordFromDbRow( $row );
+	}
+
+	/**
+	 * @see UserBitcoinAddressRecordStore::fetchAllForUser()
+	 */
+	public function fetchAllForUser( User $user ) {
+		if( $user->isAnon() ) {
+			return []; // We don't really support anonymous users.
+		}
+
+		$db = $this->dbSlaveProvider->getConnection();
+		$fields = self::$instanceFields;
+
+		$res = $db->select(
+			'user_bitcoin_addresses',
+			$fields,
+			[ 'userbtcaddr_user_id' => $user->getId() ],
+			__METHOD__
+		);
+
+		$addresses = [];
+		foreach ( $res as $row ) {
+			$addresses[] = $this->buildUserBitcoinAddressRecordFromDbRow( $row );
+		}
+		return $addresses;
+	}
+
+
+	protected function buildUserBitcoinAddressRecordFromDbRow( stdClass $row ) {
 		$userId = intval( $row->userbtcaddr_user_id );
 		$user = User::newFromId( $userId );
 		$btcAddr = new BitcoinAddress( $row->userbtcaddr_address );
@@ -123,13 +153,6 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 			->exposedOn( $exposedOn )
 			->purpose( $row->userbtcaddr_purpose )
 			->build();
-	}
-
-	/**
-	 * @see UserBitcoinAddressRecordStore::fetchAllForUser()
-	 */
-	public function fetchAllForUser( User $user ) {
-		// TODO
 	}
 
 	private function serializeRecordForDb( UserBitcoinAddressRecord $record, DatabaseBase $db ) {
