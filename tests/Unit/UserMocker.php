@@ -4,8 +4,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
 use User;
 use PHPUnit_Framework_TestCase;
-use PHPUnit_Framework_MockObject_MockBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\MwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\MwUserFactory;
 
 /**
  * User mock creator helper for this package's tests.

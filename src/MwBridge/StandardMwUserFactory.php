@@ -1,5 +1,5 @@
 <?php
-namespace MediaWiki\Ext\UserBitcoinAddresses;
+namespace MediaWiki\Ext\UserBitcoinAddresses\MwBridge;
 
 use User;
 

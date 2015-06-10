@@ -5,7 +5,6 @@ use LogicException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use User;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
-use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
 
 /**
  * Store interface for storing and fetching UserBitcoinAddressRecord instances.

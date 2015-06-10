@@ -1,7 +1,7 @@
 <?php
-namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
+namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\MwBridge;
 
-use MediaWiki\Ext\UserBitcoinAddresses\StandardMwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\StandardMwUserFactory;
 
 /**
  * @group UserBitcoinAddresses

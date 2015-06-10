@@ -4,10 +4,8 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordStore as UBARStore;
-use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARMwDbStore;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
-
-use \Exception;
+use Exception;
 use SpecialPage;
 use DerivativeRequest;
 use Html;

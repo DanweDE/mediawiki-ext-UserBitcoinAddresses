@@ -1,7 +1,7 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses;
 
-use MediaWiki\Ext\UserBitcoinAddresses\Store;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge;
 
 /**
  * Top level factory for the extension.
@@ -40,28 +40,28 @@ class Extension {
 	/**
 	 * @since 1.0.0
 	 *
-	 * @return Store\DBConnectionProvider
+	 * @return MwBridge\DBConnectionProvider
 	 */
 	public function getSlaveConnectionProvider() {
-		return new Store\LazyDBConnectionProvider( DB_SLAVE );
+		return new MwBridge\LazyDBConnectionProvider( DB_SLAVE );
 	}
 
 	/**
 	 * @since 1.0.0
 	 *
-	 * @return Store\DBConnectionProvider
+	 * @return MwBridge\DBConnectionProvider
 	 */
 	public function getMasterConnectionProvider() {
-		return new Store\LazyDBConnectionProvider( DB_MASTER );
+		return new MwBridge\LazyDBConnectionProvider( DB_MASTER );
 	}
 
 	/**
 	 * @since 1.0.0
 	 *
-	 * @return MwUserFactory
+	 * @return MwBridge\MwUserFactory
 	 */
 	public function getMwUserFactory() {
-		return new StandardMwUserFactory();
+		return new MwBridge\StandardMwUserFactory();
 	}
 
 	/**

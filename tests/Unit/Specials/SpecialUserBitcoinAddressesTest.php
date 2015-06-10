@@ -2,17 +2,13 @@
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Specials;
 
-use MediaWiki\Ext\UserBitcoinAddresses\MockedMwUserFactory;
-use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
-use SpecialPage;
-use MediaWikiTestCase;
 use FauxRequest;
 use MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses;
 use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserMocker;
-use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARMwDbStore;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\StandardMwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\LazyDBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\StandardMwUserFactory;
 
 /**
  * @group UserBitcoinAddresses

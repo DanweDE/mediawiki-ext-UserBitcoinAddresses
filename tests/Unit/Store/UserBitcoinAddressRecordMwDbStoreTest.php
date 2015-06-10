@@ -4,12 +4,12 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Store;
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 use MediaWikiTestCase;
-use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARStore;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\StandardMwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\LazyDBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\StandardMwUserFactory;
 use User;
 use Danwe\Bitcoin\Address;
 

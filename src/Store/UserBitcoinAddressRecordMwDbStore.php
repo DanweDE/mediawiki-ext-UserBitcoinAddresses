@@ -11,7 +11,8 @@ use Danwe\Bitcoin\Address as BitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\MwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\MwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\DBConnectionProvider;
 
 /**
  * For building an UserBitcoinAddress instance.

@@ -1,9 +1,9 @@
 <?php
 
-namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Store;
+namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\MwBridge;
 
-use MediaWiki\Ext\UserBitcoinAddresses\Store\DBConnectionProvider;
-use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\DBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\MwBridge\LazyDBConnectionProvider;
 
 /**
  * @note Taken from SubPageList extension.

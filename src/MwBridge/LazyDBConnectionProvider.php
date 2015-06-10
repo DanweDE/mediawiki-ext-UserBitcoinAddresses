@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
+namespace MediaWiki\Ext\UserBitcoinAddresses\MwBridge;
 
 use DatabaseBase;
 

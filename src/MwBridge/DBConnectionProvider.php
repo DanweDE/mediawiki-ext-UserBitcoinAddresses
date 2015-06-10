@@ -1,13 +1,13 @@
 <?php
 
-namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
+namespace MediaWiki\Ext\UserBitcoinAddresses\MwBridge;
 
 use DatabaseBase;
 
 /**
  * Interface for database connection providers.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @note Taken from SubPageList extension.
  * @TODO Common base with SubPageList extension and others.
