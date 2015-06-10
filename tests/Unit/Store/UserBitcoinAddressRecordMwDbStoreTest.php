@@ -9,6 +9,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore a
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
+use MediaWiki\Ext\UserBitcoinAddresses\StandardMwUserFactory;
 use User;
 use Danwe\Bitcoin\Address;
 
@@ -231,7 +232,8 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 	public static function newStore() {
 		return new UBARStore(
 			new LazyDBConnectionProvider( DB_SLAVE ),
-			new LazyDBConnectionProvider( DB_MASTER )
+			new LazyDBConnectionProvider( DB_MASTER ),
+			new StandardMwUserFactory()
 		);
 	}
 

@@ -20,7 +20,7 @@ class UserBitcoinAddressRecordBuilderTestData {
 	 * @return array
 	 */
 	public static function validBuilderStepsProvider() {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 		return array_chunk ( [
 			[
 				'id' => null,
@@ -56,7 +56,7 @@ class UserBitcoinAddressRecordBuilderTestData {
 	 * @return array
 	 */
 	public static function invalidBuilderStepsProvider() {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 		return [
 			[
 				[],

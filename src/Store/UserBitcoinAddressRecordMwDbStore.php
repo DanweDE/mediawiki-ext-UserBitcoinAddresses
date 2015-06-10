@@ -11,6 +11,7 @@ use Danwe\Bitcoin\Address as BitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
+use MediaWiki\Ext\UserBitcoinAddresses\MwUserFactory;
 
 /**
  * For building an UserBitcoinAddress instance.
@@ -42,15 +43,23 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	protected $dbMasterProvider;
 
 	/**
+	 * @var MwUserFactory
+	 */
+	protected $mwUserFactory;
+
+	/**
 	 * @param DBConnectionProvider $dbSlaveProvider
 	 * @param DBConnectionProvider $dbMasterProvider
+	 * @param MwUserFactory $mwUserFactory
 	 */
 	function __construct(
 		DBConnectionProvider $dbSlaveProvider,
-		DBConnectionProvider $dbMasterProvider
+		DBConnectionProvider $dbMasterProvider,
+		MwUserFactory $mwUserFactory
 	) {
 		$this->dbSlaveProvider = $dbSlaveProvider;
 		$this->dbMasterProvider = $dbMasterProvider;
+		$this->mwUserFactory = $mwUserFactory;
 	}
 
 	/**
@@ -166,7 +175,7 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 
 	protected function buildUserBitcoinAddressRecordFromDbRow( stdClass $row ) {
 		$userId = intval( $row->userbtcaddr_user_id );
-		$user = User::newFromId( $userId );
+		$user = $this->mwUserFactory->newFromId( $userId );
 		$btcAddr = new BitcoinAddress( $row->userbtcaddr_address );
 		$addedOn = $this->deserializeDateOrNull( $row->userbtcaddr_added_on );
 		$exposedOn = $this->deserializeDateOrNull( $row->userbtcaddr_exposed_on );

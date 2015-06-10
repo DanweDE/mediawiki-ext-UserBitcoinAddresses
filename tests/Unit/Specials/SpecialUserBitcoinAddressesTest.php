@@ -2,15 +2,23 @@
 
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Specials;
 
+use MediaWiki\Ext\UserBitcoinAddresses\MockedMwUserFactory;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
+use SpecialPage;
 use MediaWikiTestCase;
 use FauxRequest;
 use MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses;
-use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Mocker;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserMocker;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\LazyDBConnectionProvider;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARMwDbStore;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
+use MediaWiki\Ext\UserBitcoinAddresses\StandardMwUserFactory;
 
 /**
  * @group UserBitcoinAddresses
  * @group SpecialPage
  * @group UserBitcoinAddressesSpecialPage
+ * @group Database
  *
  * @since 1.0.0
  *
@@ -19,15 +27,38 @@ use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Mocker;
  */
 class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 
+	protected static $btcAddresses = [
+		'1Ax4gZtb7gAit2TivwejZHYtNNLT18PUXJ',
+		'1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i',
+		'1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv',
+		'1Gqk4Tv79P91Cc1STQtU3s1W6277M2CVWu',
+	];
+
 	protected function newSpecialPage() {
-		return new SpecialUserBitcoinAddresses();
+		return new SpecialUserBitcoinAddresses(
+			new UBARMwDbStore(
+				new LazyDBConnectionProvider( DB_SLAVE ),
+				new LazyDBConnectionProvider( DB_MASTER ),
+				new StandardMwUserFactory()
+			)
+		);
+	}
+
+	protected function newSpecialPageCompatibleWithMockUsers( $mocker ) {
+		return new SpecialUserBitcoinAddresses(
+			new UBARMwDbStore(
+				new LazyDBConnectionProvider( DB_SLAVE ),
+				new LazyDBConnectionProvider( DB_MASTER ),
+				$mocker
+			)
+		);
 	}
 
 	/**
 	 * @dataProvider formInputAndExpectedOutputProvider
 	 */
 	public function testValidAndInvalidAddressesInserted( $input, $result ) {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 		$user = $mocker->newAuthorizedUser();
 
 		$request = new FauxRequest( array(
@@ -36,7 +67,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 			'wpEditToken' => $user->getEditToken(),
 		), true );
 
-		list( $output, ) = $this->executeSpecialPage( '', $request, 'qqx', $user );
+		list( $html, ) = $this->executeSpecialPage( '', $request, 'qqx', $user );
 
 		$this->assertTag( array(
 			'tag' => 'textarea',
@@ -45,7 +76,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 				'name' => 'wpaddresses',
 			),
 			'content' => $result[ 'addresses' ],
-		), $output, '\"addresses\" form field content is matching expectations' );
+		), $html, '\"addresses\" form field content is matching expectations' );
 
 		$this->assertTag( array(
 			'tag' => 'textarea',
@@ -54,18 +85,12 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 				'name' => 'wpaddressesToBeCorrected',
 			),
 			'content' => $result[ 'addressesToBeCorrected' ],
-		), $output, '\"addresses to be corrected\" form field content is matching expectations' );
+		), $html, '\"addresses to be corrected\" form field content is matching expectations' );
 	}
 
-	public static function formInputAndExpectedOutputProvider() {
-		function glue() {
-			return implode( "\n", func_get_args() );
-		}
-		$addr1 = '1Ax4gZtb7gAit2TivwejZHYtNNLT18PUXJ';
-		$addr2 = '1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i';
-		$addr3 = '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv';
-		$addr4 = '1Gqk4Tv79P91Cc1STQtU3s1W6277M2CVWu';
 
+	public static function formInputAndExpectedOutputProvider() {
+		list( $addr1, $addr2, $addr3, $addr4 ) = self::$btcAddresses;
 		return [
 			'valid addresses in first field and empty, to be ignored values' => [
 				[
@@ -81,8 +106,8 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 					'addresses'              => "$addr1 bar $addr2 foo",
 					'addressesToBeCorrected' => "",
 				], [
-					'addresses'              => glue( $addr1, $addr2 ),
-					'addressesToBeCorrected' => glue( "bar", "foo" ),
+					'addresses'              => self::glue( $addr1, $addr2 ),
+					'addressesToBeCorrected' => self::glue( "bar", "foo" ),
 				]
 			],
 			'different separators in first field and duplicate addresses' => [
@@ -90,7 +115,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 					'addresses'              => "bar, $addr1\n$addr2, $addr1 bar",
 					'addressesToBeCorrected' => "",
 				], [
-					'addresses'              => glue( $addr1, $addr2 ),
+					'addresses'              => self::glue( $addr1, $addr2 ),
 					'addressesToBeCorrected' => "bar",
 				]
 			],
@@ -99,7 +124,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 					'addresses'              => "foo",
 					'addressesToBeCorrected' => "$addr1, $addr2 $addr3\n$addr4",
 				], [
-					'addresses'              => glue( $addr1, $addr2, $addr3, $addr4 ),
+					'addresses'              => self::glue( $addr1, $addr2, $addr3, $addr4 ),
 					'addressesToBeCorrected' => "foo",
 				]
 			],
@@ -108,11 +133,110 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 					'addresses'              => "$addr1, $addr2 $addr3 foo bar",
 					'addressesToBeCorrected' => "$addr1, $addr2 $addr3 foo bar",
 				], [
-					'addresses'              => glue( $addr1, $addr2, $addr3 ),
-					'addressesToBeCorrected' => glue( "foo", "bar" ),
+					'addresses'              => self::glue( $addr1, $addr2, $addr3 ),
+					'addressesToBeCorrected' => self::glue( "foo", "bar" ),
 				]
 			]
 		];
 	}
 
+	/**
+	 * @dataProvider manualInsertionSessions
+	 */
+	public function testSubmitReportAfterManualInsertion(
+		array $existingAddresses,
+		array $insertAddresses,
+		array $expected
+	) {
+		$mocker = new UserMocker();
+		$specialPage = $this->newSpecialPageCompatibleWithMockUsers( $mocker );
+		$store = $specialPage->getUserBitcoinAddressStore();
+		$user = $mocker->newAuthorizedUser();
+		$builder = ( new UBARBuilder() )->user( $user );
+
+		foreach( $existingAddresses as $address ) {
+			$store->add(
+				$builder->bitcoinAddress( $address )->build()
+			);
+		};
+
+		$request = new FauxRequest( array(
+			'wpaddresses' => implode( ' ', $insertAddresses ),
+		), true );
+
+		list( $html ) = $this->executeSpecialPage( '', $request, 'qqx', $user, $specialPage );
+
+		foreach( $expected as $regex ) {
+			$this->assertRegExp( $regex, $html );
+		}
+	}
+
+	public static function manualInsertionSessions() {
+		list( $addr1, $addr2, $addr3, $addr4 ) = self::$btcAddresses;
+		return [
+			'insert one new address' => [
+				[],
+				[ $addr1 ],
+				[
+					"/\\(userbtcaddr-submitaddresses-manualinsert-submitstatus-added: 1, $addr1\\)/",
+				]
+			],
+			'insert multiple new addresses' => [
+				[],
+				[ $addr1, $addr2, $addr3 ],
+				[
+					'/\(userbtcaddr-submitaddresses-manualinsert-submitstatus-added: 3/',
+				]
+			],
+			'one address inserted but exists already' => [
+				[ $addr1 ],
+				[ $addr1 ],
+				[
+					"/\\(userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicate: $addr1/",
+				]
+			],
+			'multiple addresses inserted but all exist already' => [
+				[ $addr1, $addr2 ],
+				[ $addr1, $addr2 ],
+				[
+					'/\(userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicatesonly: 2\)/',
+					"/\\(userbtcaddr-submitaddresses-duplicateaddressformat: \\d+, $addr1/",
+					"/\\(userbtcaddr-submitaddresses-duplicateaddressformat: \\d+, $addr1/",
+				]
+			],
+			'one address inserted, another exists already' => [
+				[ $addr1 ],
+				[ $addr1, $addr2 ],
+				[
+					"/\\(userbtcaddr-submitaddresses-manualinsert-submitstatus-added: 1, $addr2\\)/" ,
+					"/\\(userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicate: $addr1/",
+				]
+			],
+			'Multiple addresses inserted, another exists already' => [
+				[ $addr1 ],
+				[ $addr1, $addr2, $addr3 ],
+				[
+					'/\(userbtcaddr-submitaddresses-manualinsert-submitstatus-added: 2/' ,
+					"/\\(userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicate: $addr1/",
+				]
+			],
+			'Multiple addresses inserted, multiple exist already' => [
+				[ $addr1, $addr2 ],
+				[ $addr1, $addr2, $addr3, $addr4 ],
+				[
+					'/\(userbtcaddr-submitaddresses-manualinsert-submitstatus-added: 2/' ,
+					'/\(userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicates: 2/',
+					"/\\(userbtcaddr-submitaddresses-duplicateaddressformat: \\d+, $addr1/",
+					"/\\(userbtcaddr-submitaddresses-duplicateaddressformat: \\d+, $addr2/",
+				]
+			],
+		];
+	}
+
+	/**
+	 * @return string
+	 */
+	protected static function glue() {
+		return implode( "\n", func_get_args() );
+	}
 }

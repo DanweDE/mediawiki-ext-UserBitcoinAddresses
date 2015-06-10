@@ -33,7 +33,7 @@ class UserBitcoinAddressRecordTestData {
 	 * @return array( [ UserBitcoinAddressRecord, UserBitcoinAddressRecord, boolean $equal ], ... )
 	 */
 	public static function equalInstancesProvider() {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 
 		$user1   = $mocker->newUser( 'Dronte' );
 		$user1_2 = $mocker->newUser( 'Dronte' );
@@ -123,7 +123,7 @@ class UserBitcoinAddressRecordTestData {
 	 * @return array( [ UserBitcoinAddressRecord $instance, UserBitcoinAddressRecord $instanceCopy, UserBitcoinAddressRecord[] $otherInstances ] )
 	 */
 	public static function sameDataInstancesProvider() {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 		$user = $mocker->newUser();
 
 		$baseInstanceBuilders = [

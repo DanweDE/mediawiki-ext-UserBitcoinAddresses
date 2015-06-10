@@ -58,12 +58,22 @@ class Extension {
 	/**
 	 * @since 1.0.0
 	 *
+	 * @return MwUserFactory
+	 */
+	public function getMwUserFactory() {
+		return new StandardMwUserFactory();
+	}
+
+	/**
+	 * @since 1.0.0
+	 *
 	 * @return Store\UserBitcoinAddressRecordStore
 	 */
 	public function getUserBitcoinAddressRecordStore() {
 		return new Store\UserBitcoinAddressRecordMwDbStore(
 			$this->getSlaveConnectionProvider(),
-			$this->getMasterConnectionProvider()
+			$this->getMasterConnectionProvider(),
+			$this->getMwUserFactory()
 		);
 	}
 

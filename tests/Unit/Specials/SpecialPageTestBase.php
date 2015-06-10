@@ -65,6 +65,7 @@ abstract class SpecialPageTestBase extends MediaWikiTestCase {
 	 * @param WebRequest|null $request Web request that may contain URL parameters, etc
 	 * @param Language|string|null $language The language which should be used in the context of this special page
 	 * @param User|null $user The user which should be used in the context of this special page
+	 * @param SpecialPage $specialPage
 	 *
 	 * @throws Exception
 	 * @return array( string, WebResponse ) A two-elements array containing the HTML output
@@ -74,14 +75,15 @@ abstract class SpecialPageTestBase extends MediaWikiTestCase {
 		$subPage = '',
 		WebRequest $request = null,
 		$language = null,
-		User $user = null
+		User $user = null,
+		SpecialPage $specialPage = null
 	) {
 		$context = $this->newContext( $request, $language, $user );
 
 		$output = new OutputPage( $context );
 		$context->setOutput( $output );
 
-		$page = $this->newSpecialPage();
+		$page = $specialPage ? $specialPage : $this->newSpecialPage();
 		$page->setContext( $context );
 		$output->setTitle( $page->getPageTitle() );
 

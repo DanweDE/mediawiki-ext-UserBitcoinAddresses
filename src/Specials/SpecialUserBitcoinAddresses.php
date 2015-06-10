@@ -1,6 +1,12 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Specials;
 
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordStore as UBARStore;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordMwDbStore as UBARMwDbStore;
+use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
+
 use \Exception;
 use SpecialPage;
 use DerivativeRequest;
@@ -15,11 +21,42 @@ use Danwe\Bitcoin\Address as BtcAddress;
  * @author Daniel A. R. Werner
  */
 class SpecialUserBitcoinAddresses extends SpecialPage {
+
+	/**
+	 * @var UBARStore
+	 */
+	protected $store;
+
+	/**
+	 * Valid Bitcoin addresses collected during field validation. Will be used in form submit
+	 * callback to save some execution time for redundant work.
+	 *
+	 * @var BtcAddress[]
+	 */
+	protected $validBtcAddresses;
+
+	/**
+	 * Records which have been stored after form has been submitted.
+	 *
+	 * @var UBARecord
+	 */
+	protected $storedRecords;
+
+	/**
+	 * Records which were supposed to be stored after form has been submitted but which are
+	 * redundant with the user's existing addresses.
+	 *
+	 * @var UBARecord
+	 */
+	protected $existingRecords;
+
 	/**
 	 * @see SpecialPage::__construct
 	 */
-	public function __construct() {
+	public function __construct( UBARStore $userBitcoinAddressStore ) {
 		parent::__construct( 'UserBitcoinAddresses' );
+
+		$this->store = $userBitcoinAddressStore;
 	}
 
 	public function execute( $subPage ) {
@@ -62,8 +99,28 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	}
 
 	public function formSubmitted( $data, HTMLForm $form ) {
+		$this->storeValidBitcoinAddresses();
+		$this->renderSubmitReport();
 		$this->renderSubmitFormAsEmpty( $form ); // Display form again but empty data.
 		return true;
+	}
+
+	protected function storeValidBitcoinAddresses() {
+		$this->storedRecords = [];
+		$this->existingRecords = [];
+
+		$recordBuilder = ( new UBARBuilder() )
+			->user( $this->getContext()->getUser() );
+
+		foreach( $this->validBtcAddresses as $btcAddress ) {
+			$recordBuilder->bitcoinAddress( $btcAddress );
+
+			try {
+				$this->storedRecords[] = $this->store->add( $recordBuilder->build() );
+			} catch( InstanceAlreadyStoredException $e ) {
+				$this->existingRecords[] = $e->getAlreadyStoredInstance();
+			}
+		}
 	}
 
 	protected function renderSubmitFormAsEmpty( HtmlForm $form ) {
@@ -74,19 +131,70 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->renderSubmitForm( $emptyRequestContext );
 	}
 
-	public function validateAddressInput( $value, $alldata, $form ) {
-		$allAddresses = $alldata['addresses'] . ' ' . $alldata['addressesToBeCorrected'];
+	protected function renderSubmitReport() {
+		$storedRecords = $this->storedRecords;
+		$existingRecords = $this->existingRecords;
+		$storedRecordsLength = count( $storedRecords );
+		$existingRecordsLength = count( $existingRecords );
+		$html = '';
+
+		if( $storedRecordsLength > 0 ) {
+			$html .= $this->msg(
+				'userbtcaddr-submitaddresses-manualinsert-submitstatus-added',
+				$storedRecordsLength,
+				$storedRecords[ 0 ]->getBitcoinAddress()->asString()
+			)->parseAsBlock();
+		}
+
+		if( $existingRecordsLength === 1 ) {
+			$html .= $this->msg(
+				'userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicate',
+				$existingRecords[ 0 ]->getBitcoinAddress()->asString()
+			)->parseAsBlock();
+		}
+		else if ( $existingRecordsLength > 1 ) {
+			$html .= $this->msg(
+				$storedRecordsLength > 0
+					? 'userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicates'
+					: 'userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicatesonly',
+				$existingRecordsLength
+			)->parseAsBlock();
+
+			$existingAddressesLi = [];
+			foreach( $existingRecords as $record ) {
+				$existingAddressesLi[ $record->getId() ] =
+					Html::openElement( 'li' )
+					. $this->msg(
+						'userbtcaddr-submitaddresses-duplicateaddressformat',
+						$record->getId(),
+						$record->getBitcoinAddress()->asString() )->parse()
+					. Html::closeElement( 'li' );
+
+			}
+			ksort( $existingAddressesLi );
+			$html .= Html::rawElement( 'ul', [], implode( '', $existingAddressesLi ) );
+		}
+
+		$this->getOutput()->addHtml( $html );
+		$this->getOutput()->addElement( 'hr' );
+	}
+
+	public function validateAddressInput( $value, $allData, $form ) {
+		$allAddresses = $allData['addresses'] . ' ' . $allData['addressesToBeCorrected'];
 		$addressStrings = array_filter(
 			array_unique( preg_split( "/[^A-Za-z0-9]+/", $allAddresses ) ),
 			function( $val ) { return $val !== ''; }
 		);
+		$this->validBtcAddresses = [];
 		$invalidAddressStrings = [];
 		$validAddressStrings = [];
 
 		foreach( $addressStrings as $addressString ) {
 			try {
-				new BtcAddress( $addressString );
-				$validAddressStrings[] = $addressString;
+				$address = new BtcAddress( $addressString );
+
+				$this->validBtcAddresses[] = $address;
+				$validAddressStrings[] = $address->asString();
 			} catch( Exception $error ) {
 				$invalidAddressStrings[] = $addressString;
 			}
@@ -96,11 +204,10 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$form->mFieldData['addressesToBeCorrected'] = implode( "\n", $invalidAddressStrings );
 
 		if( !empty( $invalidAddressStrings ) ) {
-
 			$msg = $this->msg(
 				'userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest',
 				sizeof( $invalidAddressStrings )
-			)->parse();
+			)->text();
 			return HTML::element( 'div', [ 'class' => 'error' ] , $msg );
 		}
 		else if( empty( $validAddressStrings ) ) {
@@ -139,4 +246,12 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		return 'users';
     }
 
+	/**
+	 * Returns the store used by the special page to access and save the user's bitcoin addresses.
+	 *
+	 * @return UBARStore
+	 */
+	public function getUserBitcoinAddressStore() {
+		return $this->store;
+	}
 }

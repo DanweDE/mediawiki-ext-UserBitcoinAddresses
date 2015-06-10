@@ -5,6 +5,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use DatabaseUpdater;
 use SplFileInfo;
+use MediaWiki\Ext\UserBitcoinAddresses\Specials\SpecialUserBitcoinAddresses;
 
 /**
  * Contains the logic for setting up the extension.
@@ -67,8 +68,11 @@ class ExtensionSetup {
 	private function registerSpecialPages() {
 		$specialNs = 'MediaWiki\Ext\UserBitcoinAddresses\Specials';
 
-		$this->globals['wgSpecialPages']['UserBitcoinAddresses']
-			= "$specialNs\\SpecialUserBitcoinAddresses";
+		$this->globals['wgSpecialPages']['UserBitcoinAddresses'] = function() {
+			return new SpecialUserBitcoinAddresses(
+				$this->extension->getUserBitcoinAddressRecordStore()
+			);
+		};
 	}
 
 	public function registerHooks() {

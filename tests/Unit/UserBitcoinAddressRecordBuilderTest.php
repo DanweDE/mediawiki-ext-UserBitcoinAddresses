@@ -75,6 +75,17 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 		}
 	}
 
+	public function testSettingAddressViaString() {
+		$addressString = '1C5bSj1iEGUgSTbziymG7Cn18ENQuT36vv';
+		$address = ( new UserBitcoinAddressRecordBuilder() )
+			->bitcoinAddress( $addressString )
+			->getBitcoinAddress();
+
+		$this->assertInstanceOf( 'Danwe\Bitcoin\Address', $address,
+			'getBitcoinAddress() returns Danwe\Bitcoin\Address instance after bitcoinAddress( string )' );
+		$this->assertEquals( $addressString, $address->asString() );
+	}
+
 	/**
 	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordBuilderTestData::validBuilderStepsProvider
 	 * @depends testSetterGetterPairsWithValidValues
@@ -237,7 +248,7 @@ class UserBitcoinAddressRecordBuilderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public static function extendableObjectProvider() {
-		$mocker = new Mocker();
+		$mocker = new UserMocker();
 
 		return [
 			'"empty" UserBitcoinAddressRecordBuilder instance' => [

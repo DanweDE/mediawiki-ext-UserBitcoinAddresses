@@ -94,12 +94,15 @@ class UserBitcoinAddressRecordBuilder implements ExtendableAsUserBitcoinAddressR
 	/**
 	 * Sets the address or nullifies it. Object can't be built without an Address instance.
 	 *
-	 * @param Address|null $address
+	 * @param Address|string|null $address
 	 * @return UserBitcoinAddressRecordBuilder Same instance for chaining.
 	 */
 	public function bitcoinAddress( $address ) {
+		if( is_string( $address ) ) {
+			$address = new Address( $address );
+		}
 		if( $address !== null && !( $address instanceof Address ) ) {
-			throw new InvalidArgumentException( 'address has to be an User instance or null' );
+			throw new InvalidArgumentException( 'address has to be a bitcoin address or null' );
 		}
 		$this->bitcoinAddress = $address;
 		return $this;
