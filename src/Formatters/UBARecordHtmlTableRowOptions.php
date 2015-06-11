@@ -51,8 +51,7 @@ class UBARecordHtmlTableRowOptions {
 	 * values.
 	 *
 	 * @param DateTimeFormatter $formatter
-	 *
-*@return DateTimeFormatter|$this
+	 * @return DateTimeFormatter|$this
 	 */
 	public function timeAndDateFormatter( DateTimeFormatter $formatter = null ) {
 		return $this->getOrSet( 'timeAndDateFormatter', $formatter );
@@ -60,10 +59,7 @@ class UBARecordHtmlTableRowOptions {
 
 	private function getTimeAndDateFormatter() {
 		if( $this->timeAndDateFormatter === null ) {
-			// TODO: Add simple default formatter instead. Should be optional to set a formatter.
-			throw new \BadFunctionCallException(
-				'timeAndDateFormatter() should have been called previously to set a formatter'
-			);
+			$this->timeAndDateFormatter = new StandardDateTimeFormatter();
 		}
 		return $this->timeAndDateFormatter;
 	}

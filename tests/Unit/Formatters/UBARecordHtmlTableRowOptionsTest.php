@@ -30,23 +30,14 @@ class UBARecordHtmlTableRowOptionsTest extends \PHPUnit_Framework_TestCase {
 	public function testUserGetterAndSetter( $getterAndSetter, $value ) {
 		$instance = new UBARecordHtmlTableRowOptions();
 
-		if( $getterAndSetter !== 'timeAndDateFormatter' ) {
-			$this->assertNotEquals( null, $instance->$getterAndSetter(),
-				'getter returns some default value' );
-		}
+		$this->assertNotEquals( null, $instance->$getterAndSetter(),
+			'getter returns some default value' );
 
 		$this->assertSame( $instance, $instance->$getterAndSetter( $value ),
 			'setter returns self-reference' );
 
 		$this->assertSame( $value, $instance->$getterAndSetter(),
 			'getter returns changed value previously set via setter' );
-	}
-	/**
-	 * @expectedException \BadFunctionCallException
-	 */
-	public function testTimeAndDateFormatterGetterThrowsExceptionIfNotSet() {
-		$instance = new UBARecordHtmlTableRowOptions();
-		$instance->timeAndDateFormatter();
 	}
 
 	/**
