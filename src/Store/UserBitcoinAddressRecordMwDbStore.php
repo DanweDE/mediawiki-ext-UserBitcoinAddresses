@@ -117,6 +117,16 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	}
 
 	/**
+	 * @see UserBitcoinAddressRecordStore::fetchById()
+	 */
+	public function fetchByUser( User $user ) {
+		return
+			$this->fetchSingleInstanceByConditions( [
+				'userbtcaddr_user_id' => $user->getId(),
+			] );
+	}
+
+	/**
 	 * @see UserBitcoinAddressRecordStore::fetchByUserBtcAddress()
 	 */
 	public function fetchByUserBtcAddress( UserBitcoinAddress $userBitcoinAddress ) {

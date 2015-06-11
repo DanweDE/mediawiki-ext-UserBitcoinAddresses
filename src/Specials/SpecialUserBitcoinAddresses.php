@@ -5,6 +5,9 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordStore as UBARStore;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
+use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRow;
+use MediaWiki\Ext\UserBitcoinAddresses\Formatters\BitcoinAddressMonoSpaceHtml;
+use MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml;
 use Exception;
 use SpecialPage;
 use DerivativeRequest;
@@ -64,6 +67,8 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->checkReadOnly();
 
 		$this->renderSubmitForm( $this->getContext() );
+		
+		$this->renderUsersBitcoinAddresses();
 
 		$this->getOutput()->addModules( 'mw.ext.userBitcoinAddresses.special' );
 	}
@@ -175,6 +180,34 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 
 		$this->getOutput()->addHtml( $html );
 		$this->getOutput()->addElement( 'hr' );
+	}
+	
+	protected function renderUsersBitcoinAddresses() {
+		$user = $this->getUser();
+		$usersUBARecords = $this->store->fetchAllForUser( $user );
+		$rowFormatter = new UBARecordHtmlTableRow();
+		$rowFormatter->options()
+			->printFieldsWithout( 'user' )
+			->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
+			->timeAndDateFormatter( new MWUserDateTimeHtml( $user) );
+
+		$html = Html::element( 'b', [], $this->msg( 'userbtcaddr-unusedaddresses' )->text() );
+		$html .= Html::openElement( 'table', [ 'class' => 'wikitable sortable' ] );
+
+		foreach( $rowFormatter->options()->printFields() as $field ) {
+			$lcField = strtolower( $field );
+			$ths[] = Html::element( 'th', [], $this->msg(
+				"userbtcaddr-formatters-recordstable-th-$lcField" )->text() );
+		}
+		$html .= Html::rawElement( 'tr', [], implode( '', $ths ) );
+
+		foreach( $usersUBARecords as $record ) {
+			$html .= $rowFormatter->format( $record );
+		}
+
+		$html .= Html::closeElement( 'table' );
+
+		$this->getOutput()->addHtml( $html );
 	}
 
 	public function validateAddressInput( $value, $allData, $form ) {

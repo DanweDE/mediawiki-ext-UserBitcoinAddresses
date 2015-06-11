@@ -4,9 +4,8 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
 use User;
 use Danwe\Bitcoin\Address;
-use Datetime;
+use DateTime;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder;
-use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTest;
 
 /**
  * @group UserBitcoinAddresses

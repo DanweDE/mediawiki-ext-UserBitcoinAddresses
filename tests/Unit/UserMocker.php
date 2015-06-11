@@ -1,5 +1,4 @@
 <?php
-
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit;
 
 use User;

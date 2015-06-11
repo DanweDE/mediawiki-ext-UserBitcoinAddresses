@@ -15,5 +15,14 @@
 	"userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicate": "The address <tt>$1</tt> was not added since it is already registered as yours.",
 	"userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicates": "The following $1 addresses were not added since they are already registered as yours:",
 	"userbtcaddr-submitaddresses-manualinsert-submitstatus-duplicatesonly": "No addresses were added since all $1 given addresses are already registered as yours:",
-	"userbtcaddr-submitaddresses-duplicateaddressformat": "<nowiki>#</nowiki>$1 - <tt>$2</tt>"
+	"userbtcaddr-submitaddresses-duplicateaddressformat": "<nowiki>#</nowiki>$1 - <tt>$2</tt>",
+	"userbtcaddr-unusedaddresses": "Unused Bitcoin Addresses",
+	"userbtcaddr-formatters-unknowndate": "Unknown",
+	"userbtcaddr-formatters-addressnotexposedyet": "Unused",
+	"userbtcaddr-formatters-recordstable-th-id": "#",
+	"userbtcaddr-formatters-recordstable-th-bitcoinaddress": "Address",
+	"userbtcaddr-formatters-recordstable-th-user": "User",
+	"userbtcaddr-formatters-recordstable-th-addedon": "Added on",
+	"userbtcaddr-formatters-recordstable-th-exposedon": "Used on",
+	"userbtcaddr-formatters-recordstable-th-purpose": "Purpose"
 }
