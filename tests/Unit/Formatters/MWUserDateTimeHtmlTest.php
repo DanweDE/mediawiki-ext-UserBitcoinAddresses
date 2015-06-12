@@ -5,6 +5,7 @@ use User;
 use DateTime;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml;
 use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserMocker;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\SetterAndGetterTester;
 
 /**
  * @group UserBitcoinAddresses
@@ -31,18 +32,10 @@ class MWUserDateTimeHtmlTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider userProvider
 	 */
 	public function testUserGetterAndSetter( User $user ) {
-		$formatter = new MWUserDateTimeHtml( $user );
-
-		$this->assertEquals( $user, $formatter->user(),
-			'getter returns user given in constructor');
-
-		$newUser = ( new UserMocker() )->newUser();
-
-		$this->assertEquals( $formatter, $formatter->user( $newUser ),
-			'setter returns self-reference' );
-
-		$this->assertEquals( $newUser, $formatter->user(),
-			'getter returns new user set via setter' );
+		( new SetterAndGetterTester( $this ) )
+			->getAndSet( 'user' )->on( new MWUserDateTimeHtml( $user ) )
+			->initially( $user )
+			->test( ( new UserMocker() )->newUser() );
 	}
 
 	/**

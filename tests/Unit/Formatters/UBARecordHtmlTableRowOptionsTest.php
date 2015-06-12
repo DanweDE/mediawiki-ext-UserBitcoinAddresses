@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Formatters;
 
 use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserMocker;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\SetterAndGetterTester;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowOptions;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\BitcoinAddressFormatter;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml;
@@ -28,16 +29,10 @@ class UBARecordHtmlTableRowOptionsTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider setterAndGettersCaseProvider
 	 */
 	public function testUserGetterAndSetter( $getterAndSetter, $value ) {
-		$instance = new UBARecordHtmlTableRowOptions();
-
-		$this->assertNotEquals( null, $instance->$getterAndSetter(),
-			'getter returns some default value' );
-
-		$this->assertSame( $instance, $instance->$getterAndSetter( $value ),
-			'setter returns self-reference' );
-
-		$this->assertSame( $value, $instance->$getterAndSetter(),
-			'getter returns changed value previously set via setter' );
+		( new SetterAndGetterTester( $this ) )
+			->getAndSet( $getterAndSetter )->on( new UBARecordHtmlTableRowOptions() )
+			->initiallyNotNull( true )
+			->test( $value );
 	}
 
 	/**

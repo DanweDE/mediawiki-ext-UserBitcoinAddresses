@@ -1,9 +1,9 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Formatters;
 
-use User;
 use DateTime;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\StandardDateTimeFormatter;
+use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\SetterAndGetterTester;
 
 /**
  * @group UserBitcoinAddresses
@@ -30,18 +30,10 @@ class StandardDateTimeFormatterTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider formatCaseProvider
 	 */
 	public function testFormatStringGetterAndSetter( $format ) {
-		$formatter = new StandardDateTimeFormatter( $format );
-
-		$this->assertEquals( $format, $formatter->formatString(),
-			'getter returns format string given in constructor');
-
-		$anotherFormat = 'Ymd';
-
-		$this->assertEquals( $formatter, $formatter->formatString( $anotherFormat ),
-			'setter returns self-reference' );
-
-		$this->assertEquals( $anotherFormat, $formatter->formatString(),
-			'getter returns new format string set via setter' );
+		( new SetterAndGetterTester( $this ) )
+			->getAndSet( 'formatString' )->on( new StandardDateTimeFormatter( $format ) )
+			->initially( $format )
+			->test( 'Ymd' );
 	}
 
 	/**
