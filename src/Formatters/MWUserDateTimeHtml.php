@@ -4,6 +4,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 use User;
 use Language;
 use DateTime;
+use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
 
 /**
  * Formats a DateTime instance as plain text according to the user's preferences.
@@ -43,12 +44,9 @@ class MWUserDateTimeHtml implements DateTimeFormatter {
 	 * @return User|$this
 	 */
 	public function user( User $user = null ) {
-		if( $user ) { // SETTER:
-			$this->user = $user;
-			return $this;
-		}
-		// GETTER:
-		return $this->user;
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->getOrSet( $user );
 	}
 
 	/**

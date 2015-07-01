@@ -13,20 +13,20 @@ use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\SetterAndGetterTester;
  *
  * @since 1.0.0
  *
- * @licence MIT License
+
  * @author Daniel A. R. Werner
  */
 class MWUserDateTimeHtmlTest extends \PHPUnit_Framework_TestCase {
 
-	/**
-	 * @dataProvider userProvider
-	 */
-	public function testConstruction( User $user ) {
-		$this->assertInstanceOf(
-			'MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml',
-			new MWUserDateTimeHtml( $user )
-		);
-	}
+		/**
+		 * @dataProvider userProvider
+		 */
+		public function testConstruction( User $user ) {
+			$this->assertInstanceOf(
+				'MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml',
+				new MWUserDateTimeHtml( $user )
+			);
+		}
 
 	/**
 	 * @dataProvider userProvider

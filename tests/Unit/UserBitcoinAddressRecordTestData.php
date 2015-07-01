@@ -30,6 +30,13 @@ class UserBitcoinAddressRecordTestData {
 	}
 
 	/**
+	 * @return UserBitcoinAddressRecord
+	 */
+	public static function someValidRecord() {
+		return static::instancesAndBuildersProvider()[ 0 ][ 0 ];
+	}
+
+	/**
 	 * @return array( [ UserBitcoinAddressRecord, UserBitcoinAddressRecord, boolean $equal ], ... )
 	 */
 	public static function equalInstancesProvider() {

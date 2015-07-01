@@ -1,6 +1,7 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 
+use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
 use DateTime;
 
 /**
@@ -35,12 +36,10 @@ class StandardDateTimeFormatter implements DateTimeFormatter {
 	 * @return $this|string
 	 */
 	public function formatString( $format = null ) {
-		if( $format !== null ) { // SETTER:
-			$this->formatString = $format;
-			return $this;
-		}
-		// GETTER:
-		return $this->formatString;
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->ofType( 'string' )
+			->getOrSet( $format );
 	}
 
 	/**

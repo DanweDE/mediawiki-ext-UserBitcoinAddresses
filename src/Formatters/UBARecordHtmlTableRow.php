@@ -3,6 +3,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 
 use Html;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
+use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
 
 /**
  * Formats a single UserBitcoinAddressRecord as HTML table row.
@@ -30,12 +31,9 @@ class UBARecordHtmlTableRow {
 	 * @return UBARecordHtmlTableRowOptions|$this
 	 */
 	public function options( UBARecordHtmlTableRowOptions $options = null ) {
-		if( $options ) { // SETTER:
-			$this->options = $options;
-			return $this;
-		}
-		// GETTER:
-		return $this->options;
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->getOrSet( $options );
 	}
 
 	/**

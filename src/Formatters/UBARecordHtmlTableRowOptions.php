@@ -1,9 +1,10 @@
 <?php
-
 namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 
+use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
+
 /**
- * Allows defining options for UBARHtmlTableRow formatter.
+ * Allows defining options for UBARecordHtmlTableRow formatter.
  *
  * @since 1.0.0
  *
@@ -36,14 +37,12 @@ class UBARecordHtmlTableRowOptions {
 	 * @return BitcoinAddressFormatter|$this
 	 */
 	public function bitcoinAddressFormatter( BitcoinAddressFormatter $formatter = null ) {
-		return $this->getOrSet( 'bitcoinAddressFormatter', $formatter );
-	}
-
-	private function getBitcoinAddressFormatter() {
-		if( $this->bitcoinAddressFormatter === null ) {
-			$this->bitcoinAddressFormatter = new BitcoinAddressMonoSpaceHtml();
-		}
-		return $this->bitcoinAddressFormatter;
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->initially( function() {
+				return new BitcoinAddressMonoSpaceHtml();
+			} )
+			->getOrSet( $formatter );
 	}
 
 	/**
@@ -54,14 +53,12 @@ class UBARecordHtmlTableRowOptions {
 	 * @return DateTimeFormatter|$this
 	 */
 	public function timeAndDateFormatter( DateTimeFormatter $formatter = null ) {
-		return $this->getOrSet( 'timeAndDateFormatter', $formatter );
-	}
-
-	private function getTimeAndDateFormatter() {
-		if( $this->timeAndDateFormatter === null ) {
-			$this->timeAndDateFormatter = new StandardDateTimeFormatter();
-		}
-		return $this->timeAndDateFormatter;
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->initially( function() {
+				return new StandardDateTimeFormatter();
+			} )
+			->getOrSet( $formatter );
 	}
 
 	/**
@@ -74,7 +71,9 @@ class UBARecordHtmlTableRowOptions {
 	 * @return $this
 	 */
 	public function printFields( array $fields = null ) {
-		return $this->getOrSet( 'fields', $fields );
+		return GetterSetter::access( $this )
+			->property( 'fields' )
+			->getOrSet( $fields );
 	}
 
 	/**
@@ -89,24 +88,8 @@ class UBARecordHtmlTableRowOptions {
 		}
 		$this->fields = array_values( // re-index array
 			array_diff( $this->fields, $fields ) );
+
 		return $this;
 	}
 
-	/**
-	 * Helper for combined getter/setter members.
-	 *
-	 * @param string $member
-	 * @param mixed $value
-	 * @return mixed|$this
-	 */
-	protected final function getOrSet( $member, $value ) {
-		if( $value === null ) {
-			$memberGetter = 'get' . ucfirst( $member );
-			return method_exists( $this, $memberGetter )
-				? $this->$memberGetter()
-				: $this->$member;
-		}
-		$this->$member = $value;
-		return $this;
-	}
 }

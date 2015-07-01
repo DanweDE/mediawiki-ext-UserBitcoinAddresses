@@ -5,6 +5,7 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBuilder;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordStore as UBARStore;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
+use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordsHtmlTable;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRow;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\BitcoinAddressMonoSpaceHtml;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml;
