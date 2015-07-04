@@ -186,27 +186,16 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	protected function renderUsersBitcoinAddresses() {
 		$user = $this->getUser();
 		$usersUBARecords = $this->store->fetchAllForUser( $user );
-		$rowFormatter = new UBARecordHtmlTableRow();
-		$rowFormatter->options()
-			->printFieldsWithout( 'user' )
-			->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
-			->timeAndDateFormatter( new MWUserDateTimeHtml( $user) );
 
-		$html = Html::element( 'b', [], $this->msg( 'userbtcaddr-unusedaddresses' )->text() );
-		$html .= Html::openElement( 'table', [ 'class' => 'wikitable sortable' ] );
+		$tableFormatter = new UBARecordsHtmlTable();
+		$tableFormatter->options()
+			->rowFormatter()
+				->options()
+					->printFieldsWithout( 'user' )
+					->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
+					->timeAndDateFormatter( new MWUserDateTimeHtml( $user) );
 
-		foreach( $rowFormatter->options()->printFields() as $field ) {
-			$lcField = strtolower( $field );
-			$ths[] = Html::element( 'th', [], $this->msg(
-				"userbtcaddr-formatters-recordstable-th-$lcField" )->text() );
-		}
-		$html .= Html::rawElement( 'tr', [], implode( '', $ths ) );
-
-		foreach( $usersUBARecords as $record ) {
-			$html .= $rowFormatter->format( $record );
-		}
-
-		$html .= Html::closeElement( 'table' );
+		$html = $tableFormatter->format( $usersUBARecords );
 
 		$this->getOutput()->addHtml( $html );
 	}
