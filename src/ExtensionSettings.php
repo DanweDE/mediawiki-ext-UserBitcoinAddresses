@@ -46,7 +46,7 @@ class ExtensionSettings {
 	 * @since 1.0.0
 	 *
 	 * @param array $globalVariables
-	 * @return Settings
+	 * @return ExtensionSettings
 	 */
 	public static function newFromGlobals( array $globalVariables ) {
 		return new self( array() );

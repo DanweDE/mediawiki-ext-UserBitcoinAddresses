@@ -6,7 +6,6 @@ use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordBuilder as UBARBu
 use MediaWiki\Ext\UserBitcoinAddresses\Store\UserBitcoinAddressRecordStore as UBARStore;
 use MediaWiki\Ext\UserBitcoinAddresses\Store\InstanceAlreadyStoredException;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordsHtmlTable;
-use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRow;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\BitcoinAddressMonoSpaceHtml;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\MWUserDateTimeHtml;
 use Exception;
@@ -40,7 +39,7 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	/**
 	 * Records which have been stored after form has been submitted.
 	 *
-	 * @var UBARecord
+	 * @var UBARecord[]
 	 */
 	protected $storedRecords;
 
@@ -48,7 +47,7 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	 * Records which were supposed to be stored after form has been submitted but which are
 	 * redundant with the user's existing addresses.
 	 *
-	 * @var UBARecord
+	 * @var UBARecord[]
 	 */
 	protected $existingRecords;
 

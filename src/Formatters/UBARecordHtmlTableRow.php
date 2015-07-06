@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 
 use Html;
+use DateTime;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
 
