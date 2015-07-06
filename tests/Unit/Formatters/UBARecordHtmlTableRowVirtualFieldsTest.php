@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Formatters;
 
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowVirtualFields as VirtualFields;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 
 /**
  * @group UserBitcoinAddresses
@@ -101,4 +102,62 @@ class UBARecordHtmlTableRowVirtualFieldsTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals( [ 'foo', 'second' ], $fields->getFieldNames() );
 	}
 
+	/**
+	 * @depends testSet
+	 */
+	public function testComputeValueFor( VirtualFields $fields ) {
+		$recordMock = $this->buildRecordMock();
+
+		$this->assertSame( 'value 1', $fields->computeValueFor( 'foo', $recordMock ) );
+		$this->assertSame( 'value 2', $fields->computeValueFor( 'second', $recordMock ) );
+	}
+
+	/**
+	 * @dataProvider Danwe\DataProviders\DifferentTypesValues::oneOfEachTypeProvider
+	 */
+	public function testComputeValueForFieldWithCallbackWithNonStringValues( $someValue, $valueType ) {
+		$fields = new VirtualFields();
+		$fields->set( 'a',
+			function() use( $someValue ) {
+				return $someValue;
+			}
+		);
+		$this->setExpectedExceptionRegExp( 'LogicException', "!field \"a\" is a $valueType!" );
+
+		$fields->computeValueFor( 'a', $this->buildRecordMock() );
+	}
+
+	/**
+	 * @depends testComputeValueFor
+	 */
+	public function testComputeValueForCallbackArguments() {
+		$recordMock = $this->buildRecordMock();
+		$fields = new VirtualFields();
+
+		$fields->set( 'a',
+			function( UBARecord $record ) use( $recordMock ) {
+				$this->assertSame( $recordMock, $record );
+				return 'foo';
+			}
+		);
+		$fields->computeValueFor( 'a', $recordMock );
+	}
+
+	/**
+	 * @expectedException MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowUnknownVirtualFieldException
+	 */
+	public function testComputeValueForNonExistentField() {
+		$recordMock = $this->buildRecordMock();
+		$fields = new VirtualFields();
+		$fields->computeValueFor( 'a', $recordMock );
+	}
+
+	/**
+	 * @return UBARecord
+	 */
+	private function buildRecordMock() {
+		return $this->getMockBuilder( 'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord' )
+			->disableOriginalConstructor()
+			->getMock();
+	}
 }

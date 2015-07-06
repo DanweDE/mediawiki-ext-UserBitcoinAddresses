@@ -26,6 +26,9 @@
 		"danwe/bitcoin-address": "^1.0.0",
 		"danwe/helpers-gettersetteraccessor": "^1.0.1"
 	},
+	"require-dev": {
+		"danwe/dataproviders-differenttypesvalues": "1.0.*"
+	},
 	"autoload": {
 		"files" : [
 			"UserBitcoinAddresses.php"

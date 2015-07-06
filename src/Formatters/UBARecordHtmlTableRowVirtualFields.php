@@ -1,7 +1,9 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Formatters;
 
+use LogicException;
 use InvalidArgumentException;
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 
 /**
  * Hash map of "virtual" field names and callback functions computing the virtual fields' values.
@@ -70,4 +72,29 @@ class UBARecordHtmlTableRowVirtualFields {
 		return array_keys( $this->fields );
 	}
 
+	/**
+	 * @param string $fieldName
+	 * @param UBARecord $record
+	 * @return string
+	 *
+	 * @throws UBARecordHtmlTableRowUnknownVirtualFieldException
+	 * @throws LogicException If the field's callback function does not return a string.
+	 */
+	public function computeValueFor( $fieldName, UBARecord $record ) {
+		if( !is_string( $fieldName ) ) {
+			throw new InvalidArgumentException( '$fieldName is expected to be a string' );
+		}
+		if( !$this->has( $fieldName ) ) {
+			throw new UBARecordHtmlTableRowUnknownVirtualFieldException( $fieldName, $this );
+		}
+
+		$value = $this->fields[ $fieldName ]( $record );
+
+		if( !is_string( $value ) ) {
+			throw new LogicException( "the value computed for field \"$fieldName\" is a "
+				. gettype( $value ) . " while a string was expected" );
+		}
+
+		return $value;
+	}
 }
