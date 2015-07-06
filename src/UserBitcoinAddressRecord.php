@@ -43,7 +43,7 @@ class UserBitcoinAddressRecord implements UserBitcoinAddress, ExtendableAsUserBi
 	/**
 	 * @param UserBitcoinAddressRecordBuilder $builder
 	 */
-	function __construct( UserBitcoinAddressRecordBuilder $builder ) {
+	public function __construct( UserBitcoinAddressRecordBuilder $builder ) {
 		$this->id = $builder->getId();
 		$this->user = $builder->getUser();
 		$this->bitcoinAddress = $builder->getBitcoinAddress();
