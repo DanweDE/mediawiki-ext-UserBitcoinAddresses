@@ -12,23 +12,17 @@ use Danwe\Helpers\GetterSetterAccessor as GetterSetter;
  * @author Daniel A. R. Werner
  */
 class UBARecordHtmlTableRowOptions {
-
-	/**
-	 * @var BitcoinAddressFormatter
-	 */
+	/** @var BitcoinAddressFormatter */
 	protected $bitcoinAddressFormatter = null;
 
-	/**
-	 * @var DateTimeFormatter
-	 */
+	/** @var DateTimeFormatter */
 	protected $timeAndDateFormatter = null;
 
-	/**
-	 * @var string[]
-	 */
-	protected $fields = [
-		'id', 'bitcoinAddress', 'user', 'addedOn', 'exposedOn', 'purpose'
-	];
+	/** @var string[] */
+	protected $printFields;
+
+	/** @var UBARecordHtmlTableRowVirtualFields */
+	protected $virtualFields;
 
 	/**
 	 * Sets or gets a formatter to be used for formatting Bitcoin addresses.
@@ -62,18 +56,51 @@ class UBARecordHtmlTableRowOptions {
 	}
 
 	/**
+	 * Sets or gets a UBARecordHtmlTableRowVirtualFields instance holding virtual field definitions.
+	 *
+	 * @param UBARecordHtmlTableRowVirtualFields $virtualFields
+	 * @return UBARecordHtmlTableRowVirtualFields|$this
+	 */
+	public function virtualFields( UBARecordHtmlTableRowVirtualFields $virtualFields = null ) {
+		return GetterSetter::access( $this )
+			->property( __FUNCTION__ )
+			->initially( function() {
+				return new UBARecordHtmlTableRowVirtualFields();
+			} )
+			->getOrSet( $virtualFields );
+	}
+
+	/**
 	 * Allows sto set which fields the formatter should print. Prints them in the given order.
-	 * Allowed values:
-	 *   "id", "bitcoinAddress", "user", "addedOn", "exposedOn", "purpose"
+	 * Allowed values for "real" fields:
+	 *   id, bitcoinAddress, user, addedOn, exposedOn, purpose
+	 * In addition to real fields, "virtual" fields given via virtualFields can be provided.
 	 * If no parameter is set then this works as a getter to retrieve the fields to be printed.
+	 * By default, only real fields will be printed. Use printAllFields() for convenience if all
+	 * fields should be printed.
 	 *
 	 * @param string[] $fields
 	 * @return $this
 	 */
 	public function printFields( array $fields = null ) {
 		return GetterSetter::access( $this )
-			->property( 'fields' )
+			->property( __FUNCTION__ )
+			->initially( function() {
+				return $this->getRealFields();
+			} )
 			->getOrSet( $fields );
+	}
+
+	/**
+	 * Convenience function to print all fields (virtual and real) rather than real fields only.
+	 *
+	 * @return $this
+	 */
+	public function printAllFields() {
+		$virtualFields = $this->virtualFields()->getFieldNames();
+		$this->printFields = array_merge( $this->getRealFields(), $virtualFields );
+
+		return $this;
 	}
 
 	/**
@@ -86,10 +113,17 @@ class UBARecordHtmlTableRowOptions {
 		if( is_string( $fields ) ) {
 			$fields = [ $fields ];
 		}
-		$this->fields = array_values( // re-index array
-			array_diff( $this->fields, $fields ) );
+		$virtualFields = $this->virtualFields()->getFieldNames();
+		$allFields = array_merge( $this->getRealFields(), $virtualFields );
+
+		$this->printFields = array_values( // re-index array
+			array_diff( $allFields, $fields ) );
 
 		return $this;
+	}
+
+	private function getRealFields() {
+		return [ 'id', 'bitcoinAddress', 'user', 'addedOn', 'exposedOn', 'purpose' ];
 	}
 
 }

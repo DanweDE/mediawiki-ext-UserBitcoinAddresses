@@ -6,6 +6,8 @@ use PHPUnit_Framework_TestCase;
 /**
  * Generic test helper for functions serving as both setter and getter.
  *
+ * TODO: Move into separate package.
+ *
  * @since 1.0.0
  *
  * @licence MIT License
