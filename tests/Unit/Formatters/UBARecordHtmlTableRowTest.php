@@ -1,6 +1,7 @@
 <?php
 namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Formatters;
 
+use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord as UBARecord;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRow as Formatter;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowOptions as FormatterOptions;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowVirtualFields as VirtualFields;
@@ -72,6 +73,29 @@ class UBARecordHtmlTableRowTest extends \MediaWikiTestCase {
 					"(record #$i) no fields printed, empty row" );
 			}
 		}
+	}
+
+	public function testFormatWithVirtualFields() {
+		$formatter = new Formatter();
+		$formatter->options()
+			->printFields( [ 'id', 'vField1', 'vField2' ] )
+			->virtualFields()
+				->set( 'vField1', function( UBARecord $record ) {
+					return '1.' . $record->getId();
+				} )
+				->set( 'vField2', function( UBARecord $record ) {
+					return '2.' . $record->getId();
+				} )
+		;
+
+		$record = $this->getMockBuilder( 'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord' )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$record->method( 'getId' )
+			->willReturn( 42 );
+
+		$this->assertRegExp( '!>1\.42</td>.+>2\.42</td>!', $formatter->format( $record ) );
 	}
 
 	/**

@@ -70,6 +70,10 @@ class UBARecordHtmlTableRow {
 	}
 
 	protected function getCellValue( $field, $record ) {
+		try {
+			return $this->options->virtualFields()->computeValueFor( $field, $record );
+		} catch( UBARecordHtmlTableRowUnknownVirtualFieldException $e ) {}
+
 		switch( $field ) {
 			case 'id':
 				return htmlspecialchars( $record->getId() );
