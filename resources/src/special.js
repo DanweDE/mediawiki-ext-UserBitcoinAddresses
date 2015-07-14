@@ -10,29 +10,29 @@
 	$( document ).ready( function() {
 		formatTextareas();
 		addFieldsetContainserrorClasses();
-
-		function formatTextareas() {
-			var $addr1 = $( '#mw-input-wpaddresses' ); // valid addresses
-			var $addr2 = $( '#mw-input-wpaddressesToBeCorrected' ); // invalid addresses
-
-			if( $addr2.text() === '' ) {
-				$addr2.hide();
-			} else if( $addr1.text() === '' ) {
-				$addr1.hide();
-			}
-
-			$addr1.add( $addr2 )
-				.inputautoexpand( {
-					expandWidth: false,
-					expandHeight: true
-				} )
-				.attr( 'spellcheck', 'false' )
-			;
-		}
-
-		function addFieldsetContainserrorClasses() {
-			$( '#mw-content-text' ).find( 'fieldset' ).has( 'error' ).addClass( 'containserror' );
-		}
 	} );
+
+	function formatTextareas() {
+		var $addr1 = $( '#mw-input-wpaddresses' ); // valid addresses
+		var $addr2 = $( '#mw-input-wpaddressesToBeCorrected' ); // invalid addresses
+
+		if( $addr2.text() === '' ) {
+			$addr2.hide();
+		} else if( $addr1.text() === '' ) {
+			$addr1.hide();
+		}
+
+		$addr1.add( $addr2 )
+			.inputautoexpand( {
+				expandWidth: false,
+				expandHeight: true
+			} )
+			.attr( 'spellcheck', 'false' )
+		;
+	}
+
+	function addFieldsetContainserrorClasses() {
+		$( '#mw-content-text' ).find( 'fieldset' ).has( 'error' ).addClass( 'containserror' );
+	}
 
 } )( jQuery );
