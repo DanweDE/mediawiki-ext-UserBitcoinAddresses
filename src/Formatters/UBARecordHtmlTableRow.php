@@ -44,40 +44,61 @@ class UBARecordHtmlTableRow {
 	 * @return string
 	 */
 	public function format( UBARecord $record ) {
-		$rawValues = [
-			'id'             => htmlspecialchars( $record->getId() ),
-			'bitcoinAddress' => $this->options->bitcoinAddressFormatter()->format( $record->getBitcoinAddress() ),
-			'user'           => htmlspecialchars( $record->getUser()->getName() ),
-			'addedOn'        => $this->formatAddedOn( $record->getAddedOn() ),
-			'exposedOn'      => $this->formatExposedOn( $record->getExposedOn() ),
-			'purpose'        => htmlspecialchars( $record->getPurpose() ),
-		];
 		$printFields = $this->options()->printFields();
 		$skipNext = false;
-		$cells = [];
+		$cells = '';
 
 		foreach( $printFields as $i => $fieldName ) {
 			if( $skipNext ) {
 				$skipNext = false;
 				continue;
 			}
-			$colspanCell = $this->handleExposedOnAndPurposeColspan( $record, $rawValues, $printFields, $i );
+			$colspanCell = $this->handleExposedOnAndPurposeColspan( $record, $printFields, $i );
 			if( $colspanCell !== null ) {
-				$cells[] = $colspanCell;
+				$cells .= $colspanCell;
 				$skipNext = true;
 			}
-			else if( array_key_exists( $fieldName, $rawValues ) ) {
-				$cells[] = Html::rawElement( 'td', [], $rawValues[ $fieldName ] );
+			else {
+				$cellValue = $this->getCellValue( $fieldName, $record );
+				// TODO: Actually, non-existent field should just result in empty cell rather than being ignored!
+				if( $cellValue !== null ) {
+					$cells .= Html::rawElement( 'td', [], $cellValue );
+				}
 			}
 		}
-		return Html::rawElement( 'tr', [], implode( '', $cells ) );
+		return Html::rawElement( 'tr', [], $cells );
+	}
+
+	protected function getCellValue( $field, $record ) {
+		switch( $field ) {
+			case 'id':
+				return htmlspecialchars( $record->getId() );
+
+			case 'bitcoinAddress':
+				return $this->options->bitcoinAddressFormatter()->format( $record->getBitcoinAddress() );
+
+			case 'user':
+				return htmlspecialchars( $record->getUser()->getName() );
+
+			case 'addedOn':
+				return $this->formatAddedOn( $record->getAddedOn() );
+
+			case 'exposedOn':
+				return $this->formatExposedOn( $record->getExposedOn() );
+
+			case 'purpose':
+				return $this->formatPurpose( $record->getPurpose() );
+
+			default:
+				return null;
+		}
 	}
 
 	/**
 	 * Handles special formatting case where the "exposedOn" field followed by the "purpose" field
 	 * (or the other way around) will be joined in one cell if both values are null.
 	 */
-	private function handleExposedOnAndPurposeColspan( $record, $rawValues, $printFields, $i ) {
+	private function handleExposedOnAndPurposeColspan( $record, $printFields, $i ) {
 		$fieldName = $printFields[ $i ];
 
 		if( ( $fieldName === 'exposedOn' || $fieldName === 'purpose' )
@@ -85,8 +106,12 @@ class UBARecordHtmlTableRow {
 			&& array_key_exists( $i + 1, $printFields )
 			&& ( $printFields[ $i + 1 ] === 'purpose' || $printFields[ $i + 1 ] === 'exposedOn' )
 		) {
-			return Html::rawElement( 'td', [ 'colspan' => 2 ],
-				$rawValues[ $fieldName ] . $rawValues[ $printFields[ $i + 1 ] ] );
+			$cellValue1 = $this->getCellValue( $fieldName, $record );
+			$cellValue2 = $this->getCellValue( $printFields[ $i + 1 ], $record );
+
+			if( $cellValue1 === $cellValue2 ) {
+				return Html::rawElement( 'td', [ 'colspan' => 2 ], $cellValue1 );
+			}
 		}
 		return null;
 	}
@@ -109,5 +134,15 @@ class UBARecordHtmlTableRow {
 		return $value === null
 			? '<i>' . wfMessage( 'userbtcaddr-formatters-addressnotexposedyet' )->escaped() . '</i>'
 			: htmlspecialchars( $this->options->timeAndDateFormatter()->format( $value ) );
+	}
+
+	/**
+	 * @param string|null $value
+	 * @return string
+	 */
+	protected function formatPurpose( $value ) {
+		return $value === null
+			? '<i>' . wfMessage( 'userbtcaddr-formatters-addressnotexposedyet' )->escaped() . '</i>'
+			: htmlspecialchars( $value );
 	}
 }

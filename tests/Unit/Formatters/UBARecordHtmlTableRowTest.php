@@ -3,6 +3,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\Formatters;
 
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRow as Formatter;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowOptions as FormatterOptions;
+use MediaWiki\Ext\UserBitcoinAddresses\Formatters\UBARecordHtmlTableRowVirtualFields as VirtualFields;
 use MediaWiki\Ext\UserBitcoinAddresses\Formatters\BitcoinAddressMonoSpaceHtml;
 use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\SetterAndGetterTester;
 use MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData;
@@ -83,6 +84,10 @@ class UBARecordHtmlTableRowTest extends \MediaWikiTestCase {
 			( new FormatterOptions )
 				->printFields( [ 'id', 'user' ] )
 				->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
+				->virtualFields(
+					( new VirtualFields() )
+						->set( 'vField1', function( $record ) { return 'foo'; } )
+				)
 		], 1 );
 	}
 
