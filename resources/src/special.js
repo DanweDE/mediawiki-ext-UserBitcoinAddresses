@@ -31,7 +31,7 @@
 		}
 
 		function addFieldsetContainserrorClasses() {
-			$( '#mw-content-text fieldset:has( .error )' ).addClass( 'containserror' );
+			$( '#mw-content-text' ).find( 'fieldset' ).has( 'error' ).addClass( 'containserror' );
 		}
 	} );
 
