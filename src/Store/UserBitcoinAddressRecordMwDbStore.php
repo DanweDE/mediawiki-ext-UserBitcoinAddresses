@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 use DatabaseBase;
+use RuntimeException;
 use LogicException;
 use InvalidArgumentException;
 use User;
@@ -65,8 +66,6 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 
 	/**
 	 * @see UserBitcoinAddressRecordStore::add()
-	 *
-	 * @throws InvalidArgumentException If given user is anonymous.
 	 */
 	public function add( UserBitcoinAddressRecord $record ) {
 		if( $record->getId() !== null ) {
@@ -102,7 +101,7 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	/**
 	 * @see UserBitcoinAddressRecordStore::update()
 	 */
-	public function update( $userBitcoinAddressRecord ) {
+	public function update( UserBitcoinAddressRecord $userBitcoinAddressRecord ) {
 		// TODO
 	}
 
@@ -110,6 +109,9 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	 * @see UserBitcoinAddressRecordStore::fetchById()
 	 */
 	public function fetchById( $id ) {
+		if( !is_integer( $id ) ) {
+			throw new InvalidArgumentException( '$id is expected to be an integer' );
+		}
 		return
 			$this->fetchSingleInstanceByConditions( [
 				'userbtcaddr_id' => $id,

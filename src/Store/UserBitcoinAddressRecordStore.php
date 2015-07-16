@@ -2,6 +2,7 @@
 namespace MediaWiki\Ext\UserBitcoinAddresses\Store;
 
 use LogicException;
+use InvalidArgumentException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddress;
 use User;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
@@ -25,6 +26,7 @@ interface UserBitcoinAddressRecordStore {
 	 * @returns UserBitcoinAddressRecord Represents the stored data.
 	 *
 	 * @throws LogicException If the given instance's UserBitcoinAddressRecord::getId() is not null.
+	 * @throws InvalidArgumentException If given user is anonymous.
 	 * @throws InstanceAlreadyStoredException If an equivalent instance has already
 	 *         been stored.
 	 */
@@ -37,13 +39,15 @@ interface UserBitcoinAddressRecordStore {
 	 * @param UserBitcoinAddressRecord $record
 	 * @returns UserBitcoinAddressRecord Returns the updated object.
 	 */
-	public function update( $record );
+	public function update( UserBitcoinAddressRecord $record );
 
 	/**
 	 * Returns a stored UserBitcoinAddressRecord instance with the given ID or null if none exists.
 	 *
 	 * @param int $id
 	 * @return UserBitcoinAddressRecord|null
+	 *
+	 * @throws InvalidArgumentException If $id is not an integer.
 	 */
 	public function fetchById( $id );
 

@@ -112,7 +112,15 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 			'fetched instance is same as the one returned by add() previously');
 
 		$this->assertEquals( null, $store->fetchById( $addedInstanceId + 1 ),
-			'can not fetch if used id is bigger than the one of the last added instance.');
+			'can not fetch if used id is bigger than the one of the last added instance');
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFetchByIdWithNonIntId() {
+		$store = $this->newStore();
+		$store->fetchById( '42' );
 	}
 
 	/**
