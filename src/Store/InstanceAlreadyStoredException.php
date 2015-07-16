@@ -7,9 +7,10 @@ use InvalidArgumentException;
 use MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord;
 
 /**
- * @group UserBitcoinAddresses
- * @group Database
- * @covers MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecordMwDbStore
+ * Exception giving information about an instance which was supposed to be stored while an equal
+ * instance is stored already.
+ *
+ * NOTE: "equal" does not mean "same". See UserBitcoinAddressRecord::equals() and ::isSame()
  *
  * @since 1.0.0
  *
