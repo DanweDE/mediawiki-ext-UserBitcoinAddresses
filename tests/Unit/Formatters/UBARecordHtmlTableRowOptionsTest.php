@@ -68,12 +68,12 @@ class UBARecordHtmlTableRowOptionsTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider printFieldsWithoutCaseProvider
+	 * @dataProvider printAllFieldsWithoutCaseProvider
 	 */
-	public function testPrintFieldsWithout( $without, array $expectedPrintFields ) {
+	public function testPrintAllFieldsWithout( $without, array $expectedPrintFields ) {
 		$instance = new UBARecordHtmlTableRowOptions();
 
-		$this->assertSame( $instance, $instance->printFieldsWithout( $without ),
+		$this->assertSame( $instance, $instance->printAllFieldsWithout( $without ),
 			'returns self-reference' );
 
 		$this->assertSame( $expectedPrintFields, $instance->printFields() );
@@ -97,7 +97,7 @@ class UBARecordHtmlTableRowOptionsTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @return array( array( string[]|string $without, string[] $expectedPrintFields ), ... )
 	 */
-	public static function printFieldsWithoutCaseProvider() {
+	public static function printAllFieldsWithoutCaseProvider() {
 		$defaultValues = [ 'id', 'bitcoinAddress', 'user', 'addedOn', 'exposedOn', 'purpose' ];
 		return [
 			[

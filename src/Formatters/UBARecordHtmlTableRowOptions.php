@@ -109,15 +109,13 @@ class UBARecordHtmlTableRowOptions {
 	 * @param string[]|string $fields
 	 * @return $this
 	 */
-	public function printFieldsWithout( $fields ) {
+	public function printAllFieldsWithout( $fields ) {
 		if( is_string( $fields ) ) {
 			$fields = [ $fields ];
 		}
-		$virtualFields = $this->virtualFields()->getFieldNames();
-		$allFields = array_merge( $this->getRealFields(), $virtualFields );
-
+		$this->printAllFields();
 		$this->printFields = array_values( // re-index array
-			array_diff( $allFields, $fields ) );
+			array_diff( $this->printFields(), $fields ) );
 
 		return $this;
 	}

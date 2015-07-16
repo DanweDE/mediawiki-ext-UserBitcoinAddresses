@@ -190,7 +190,7 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$tableFormatter->options()
 			->rowFormatter()
 				->options()
-					->printFieldsWithout( 'user' )
+					->printAllFieldsWithout( 'user' )
 					->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
 					->timeAndDateFormatter( new MWUserDateTimeHtml( $user) );
 
