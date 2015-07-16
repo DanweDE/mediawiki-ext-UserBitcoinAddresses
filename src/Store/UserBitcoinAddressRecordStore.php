@@ -52,6 +52,17 @@ interface UserBitcoinAddressRecordStore {
 	public function fetchById( $id );
 
 	/**
+	 * Removes the record with the given ID from the store and returns the removed instance. Returns
+	 * null if no instance with the given ID is part of the store.
+	 *
+	 * @param int $id
+	 * @return UserBitcoinAddressRecord|null
+	 *
+	 * @throws InvalidArgumentException If $id is not an integer.
+	 */
+	public function removeById( $id );
+
+	/**
 	 * Returns a stored UserBitcoinAddressRecord instance with the given user and bitcoin address
 	 * or null if none exists.
 	 *

@@ -119,6 +119,35 @@ class UserBitcoinAddressRecordMwDbStore implements UserBitcoinAddressRecordStore
 	}
 
 	/**
+	 * @see UserBitcoinAddressRecordStore::removeById()
+	 *
+	 * @throws RuntimeException If DatabaseBase::delete() is returning false for some reason even
+	 *         though a record with the given ID is actually stored. This case might never happen
+	 *         but has been implemented due to lack of MW's code documentation.
+	 */
+	public function removeById( $id ) {
+		$record = $this->fetchById( $id );
+
+		if( $record === null ) {
+			return null;
+		}
+
+		$db = $this->dbMasterProvider->getConnection();
+		$res = $db->delete(
+			'user_bitcoin_addresses',
+			[ 'userbtcaddr_id' => $id ],
+			__METHOD__
+		);
+		if( $res === false ) {
+			// MW documentation neither documents exceptions in detail nor states whether false can
+			// be returned as result and what it means. So do this just in case.
+			throw new RuntimeException( "removing record with ID $id seems not successful while " .
+				"DatabaseBase::delete() did not throw an error." );
+		}
+		return $record;
+	}
+
+	/**
 	 * @see UserBitcoinAddressRecordStore::fetchById()
 	 */
 	public function fetchByUser( User $user ) {

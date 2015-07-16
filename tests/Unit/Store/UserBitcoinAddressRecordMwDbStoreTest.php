@@ -125,6 +125,32 @@ class UserBitcoinAddressRecordMwDbStoreTest extends MediaWikiTestCase {
 
 	/**
 	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
+	 *
+	 * @depends testAdd
+	 * @depends testFetchById
+	 */
+	public function testRemove( UBARecord $instance, UBARBuilder $builder ) {
+		$store = $this->newStore();
+		$instance = $this->recycleInstance( $instance );
+		$updatedInstance = $store->add( $instance );
+		$storedId = $updatedInstance->getId();
+		$removedInstance = $store->removeById( $storedId );
+
+		$this->assertInstanceOf( 'MediaWiki\Ext\UserBitcoinAddresses\UserBitcoinAddressRecord',
+			$removedInstance );
+
+		$this->assertTrue( $removedInstance->isSameAs( $updatedInstance ),
+			'same record as previously added was returned by removeById()' );
+
+		$this->assertNull( $store->fetchById( $storedId ),
+			'record can not be fetch by ID after it got removed' );
+
+		$this->assertNull( $store->removeById( $storedId ),
+			'removing previously removed record via removeById() won\'t work since nothing to remove' );
+	}
+
+	/**
+	 * @dataProvider MediaWiki\Ext\UserBitcoinAddresses\Tests\Unit\UserBitcoinAddressRecordTestData::instancesAndBuildersProvider
 	 */
 	public function testFetchByUserBtcAddress( UBARecord $instance, UBARBuilder $builder ) {
 		$store = $this->newStore();
