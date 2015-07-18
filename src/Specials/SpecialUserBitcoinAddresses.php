@@ -66,6 +66,13 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->requireLogin();
 		$this->checkReadOnly();
 
+		$removeRecordWithId = $this->getRequest()->getInt( 'wpid', -1 );
+		if( $removeRecordWithId > -1
+			&& $this->getRequest()->getText( 'wpaction') === 'remove'
+		) {
+			$this->store->removeById( $removeRecordWithId );
+		}
+
 		$this->renderSubmitForm( $this->getContext() );
 		
 		$this->renderUsersBitcoinAddresses();
@@ -187,12 +194,29 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$usersUBARecords = $this->store->fetchAllForUser( $user );
 
 		$tableFormatter = new UBARecordsHtmlTable();
-		$tableFormatter->options()
-			->rowFormatter()
-				->options()
-					->printAllFieldsWithout( 'user' )
-					->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
-					->timeAndDateFormatter( new MWUserDateTimeHtml( $user) );
+		$rowOptions = $tableFormatter->options()->rowFormatter()->options();
+		$rowOptions
+			->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
+			->timeAndDateFormatter( new MWUserDateTimeHtml( $user) )
+			->virtualFields()
+				->set( 'removeLink', function( UBARecord $record ) {
+					return ( new HTMLForm( [
+						'id' => [
+							'type' => 'hidden',
+							'default' => $record->getId()
+						],
+						'action' => [
+							'type' => 'hidden',
+							'default' => 'remove'
+						]
+					], $this->getContext() ) )
+						->setMethod( 'post' )
+						->setSubmitText( 'remove' )
+						->prepareForm()
+						->getHTML( false );
+
+				} );
+		$rowOptions->printAllFieldsWithout( 'user' );
 
 		$html = $tableFormatter->format( $usersUBARecords );
 
