@@ -63,7 +63,7 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 			'wpEditToken' => $user->getEditToken(),
 		), true );
 
-		list( $html, ) = $this->executeSpecialPage( '', $request, 'qqx', $user );
+		list( $html ) = $this->executeSpecialPage( '', $request, 'qqx', $user );
 
 		$this->assertTag( array(
 			'tag' => 'textarea',
@@ -83,7 +83,6 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 			'content' => $result[ 'addressesToBeCorrected' ],
 		), $html, '\"addresses to be corrected\" form field content is matching expectations' );
 	}
-
 
 	public static function formInputAndExpectedOutputProvider() {
 		list( $addr1, $addr2, $addr3, $addr4 ) = self::$btcAddresses;
@@ -227,6 +226,29 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 				]
 			],
 		];
+	}
+
+	public function testAddressRemoved() {
+		$mocker = new UserMocker();
+		$specialPage = $this->newSpecialPageCompatibleWithMockUsers( $mocker );
+		$store = $specialPage->getUserBitcoinAddressStore();
+		$user = $mocker->newAuthorizedUser();
+		$address = ( new UBARBuilder() )
+			->user( $user )
+			->bitcoinAddress( self::$btcAddresses[ 0 ] )
+			->build();
+		$storedAddress = $store->add( $address );
+
+		$request = new FauxRequest( array(
+			'wpaction' => 'remove',
+			'wpid' => strval( $storedAddress->getId() ),
+			'wpEditToken' => $user->getEditToken(),
+		), true );
+
+		list( $html ) = $this->executeSpecialPage( '', $request, 'qqx', $user );
+
+		$this->assertRegExp(
+			"/\\(userbtcaddr-removeaddresse-report: {$address->getBitcoinAddress()}\\)/", $html );
 	}
 
 	/**

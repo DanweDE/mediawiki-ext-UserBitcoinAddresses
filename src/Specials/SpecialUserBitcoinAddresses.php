@@ -66,21 +66,26 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->requireLogin();
 		$this->checkReadOnly();
 
+		$tryToSubmitNewRecord = true;
 		$removeRecordWithId = $this->getRequest()->getInt( 'wpid', -1 );
 		if( $removeRecordWithId > -1
 			&& $this->getRequest()->getText( 'wpaction') === 'remove'
 		) {
-			$this->store->removeById( $removeRecordWithId );
+			$tryToSubmitNewRecord = false;
+			$removedRecord = $this->store->removeById( $removeRecordWithId );
+			if( $removedRecord !== null ) {
+				$this->renderRemovedRecordReport( $removedRecord );
+			}
 		}
 
-		$this->renderSubmitForm( $this->getContext() );
+		$this->renderSubmitForm( $this->getContext(), $tryToSubmitNewRecord );
 		
 		$this->renderUsersBitcoinAddresses();
 
 		$this->getOutput()->addModules( 'mw.ext.userBitcoinAddresses.special' );
 	}
 
-	protected function renderSubmitForm( $context ) {
+	protected function renderSubmitForm( $context, $trySubmit = true ) {
 		$addressFieldTemplate = [
 			'type' => 'textarea',
 			'cols' => 34,
@@ -99,18 +104,23 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 			] ),
 			'addressesToBeCorrected' => $addressFieldTemplate,
 		];
-		( new HTMLForm( $formData, $context ) )
+		$form = ( new HTMLForm( $formData, $context ) )
 			->setMethod( 'post' )
 			->setWrapperLegendMsg( 'userbtcaddr-submitaddresses-manualinsert-legend' )
 			->setId( 'userbtcaddr-submitaddresses-manualinsert' )
-			->setSubmitCallback( [ $this, 'formSubmitted' ] )
+			->setSubmitCallback( [ $this, 'formSubmitted' ] );
 			// Renders form if failure or empty. On-success rendering handled in "formSubmitted".
-			->show();
+
+		if( $trySubmit ) {
+			$form->show();
+		} else {
+			$form->prepareForm()->displayForm( false );
+		}
 	}
 
 	public function formSubmitted( $data, HTMLForm $form ) {
 		$this->storeValidBitcoinAddresses();
-		$this->renderSubmitReport();
+		$this->renderAddedRecordsReport();
 		$this->renderSubmitFormAsEmpty( $form ); // Display form again but empty data.
 		return true;
 	}
@@ -141,7 +151,14 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 		$this->renderSubmitForm( $emptyRequestContext );
 	}
 
-	protected function renderSubmitReport() {
+	public function renderRemovedRecordReport( UBARecord $record ) {
+		$html = $this->msg( 'userbtcaddr-removeaddresse-report', $record->getBitcoinAddress() );
+
+		$this->getOutput()->addHtml( $html );
+		$this->getOutput()->addElement( 'hr' );
+	}
+
+	public function renderAddedRecordsReport() {
 		$storedRecords = $this->storedRecords;
 		$existingRecords = $this->existingRecords;
 		$storedRecordsLength = count( $storedRecords );
@@ -200,10 +217,11 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 			->timeAndDateFormatter( new MWUserDateTimeHtml( $user) )
 			->virtualFields()
 				->set( 'removeLink', function( UBARecord $record ) {
+					$recordId = $record->getId();
 					return ( new HTMLForm( [
 						'id' => [
 							'type' => 'hidden',
-							'default' => $record->getId()
+							'default' => $recordId
 						],
 						'action' => [
 							'type' => 'hidden',
