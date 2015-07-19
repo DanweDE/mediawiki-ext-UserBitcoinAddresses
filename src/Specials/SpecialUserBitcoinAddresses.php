@@ -229,7 +229,8 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 						]
 					], $this->getContext() ) )
 						->setMethod( 'post' )
-						->setSubmitText( 'remove' )
+						->setSubmitTextMsg( 'userbtcaddr-removeaddresse-button-label' )
+						->setSubmitName( "remove$recordId" )
 						->prepareForm()
 						->getHTML( false );
 

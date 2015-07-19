@@ -11,4 +11,6 @@
 	"userbtcaddr-submitaddresses-manualinsert-addresses-label": "Respective label for Bitcoin addresses input text area.",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-explanation": "States how multiple addresses can be separated within the Bitcoin addresses text area.",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-correctionrequest": "Displayed when the user attempts to submit one or more invalid Bitcoin addresses."
+	"userbtcaddr-removeaddresse-button-label": "Label of the button for removing a single Bitcoin address.",
+	"userbtcaddr-removeaddresse-report": "Status report about which Bitcoin address has been removed. $1 is the address."
 }
