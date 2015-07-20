@@ -58,7 +58,7 @@ class UBARecordsHtmlTable {
 		}
 
 		return Html::rawElement( 'table',
-			[ 'class' => 'wikitable sortable' ], implode( '', $rows ) );
+			[ 'class' => 'mwuba-recordstable wikitable sortable' ], implode( '', $rows ) );
 	}
 
 	/**
@@ -67,9 +67,12 @@ class UBARecordsHtmlTable {
 	protected function buildHeaderRow() {
 		foreach( $this->options->rowFormatter()->options()->printFields() as $field ) {
 			$lcField = strtolower( $field );
+			$thAttr = [
+				'class' => "mwuba-recordstable-th-$lcField"
+			];
 
 			// TODO: Don't use global wfMessage, use options for message management.
-			$ths[] = Html::element( 'th', [], wfMessage(
+			$ths[] = Html::element( 'th', $thAttr, wfMessage(
 				"userbtcaddr-formatters-recordstable-th-$lcField" )->text() );
 			// Standard message string combinations:
 			//  - userbtcaddr-formatters-recordstable-th-id

@@ -10,6 +10,7 @@
 	$( document ).ready( function() {
 		formatTextareas();
 		addFieldsetContainserrorClasses();
+		replaceRemoveButtonsWithLinks();
 	} );
 
 	function formatTextareas() {
@@ -33,6 +34,38 @@
 
 	function addFieldsetContainserrorClasses() {
 		$( '#mw-content-text' ).find( 'fieldset' ).has( 'error' ).addClass( 'containserror' );
+	}
+
+	function replaceRemoveButtonsWithLinks() {
+		var $recordsTables = $( '.mwuba-recordstable' );
+		var $buttons = $recordsTables.find( 'input.mw-htmlform-submit' );
+		var $linkTemplate = $( '<a/>', {
+			href: window.location.href,
+			'class': 'mwuba-removerecord'
+		} );
+
+		$buttons.each( function() {
+			var $button = $( this );
+			$button.replaceWith( $linkTemplate.clone().prop( {
+				text: $button.attr( 'value' )
+			} ) );
+		} );
+
+		$recordsTables.on( 'click mouseover mouseout', '.mwuba-removerecord', function( e ) {
+			var $target = $( e.target );
+
+			switch( e.type ) {
+				case 'click':
+					e.preventDefault();
+					$target.closest( 'form' ).submit();
+					break;
+				case 'mouseover':
+				case 'mouseout':
+					$target.parents( 'tr' ).toggleClass( 'mwuba-actionimminent' );
+					break;
+			}
+
+		} )
 	}
 
 } )( jQuery );

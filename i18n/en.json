@@ -25,6 +25,7 @@
 	"userbtcaddr-formatters-recordstable-th-addedon": "Added on",
 	"userbtcaddr-formatters-recordstable-th-exposedon": "Used on",
 	"userbtcaddr-formatters-recordstable-th-purpose": "Purpose",
-	"userbtcaddr-removeaddresse-button-label": "remove",
+	"userbtcaddr-formatters-recordstable-th-removelink": "Actions",
+	"userbtcaddr-removeaddresse-button-label": "Remove",
 	"userbtcaddr-removeaddresse-report": "Removed address <tt>$1</tt> from your list."
 }

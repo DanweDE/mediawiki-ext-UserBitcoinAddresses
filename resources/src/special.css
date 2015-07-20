@@ -23,3 +23,28 @@ fieldset.containserror { /* added via JS */
 	              * +1 for general styling (border, padding etc.)
 	              */
 }
+
+th.mwuba-recordstable-th-removelink {
+	display: none;
+}
+table.mwuba-recordstable {
+	border: none;
+	background-color: white; /* for invisible last column th */
+}
+table.mwuba-recordstable tr {
+	background-color: #f9f9f9;
+}
+table.mwuba-recordstable tr > td:last-child {
+	border-right: none;
+	border-top: none;
+	background-color: white;
+
+}
+
+tr.mwuba-actionimminent {
+	background-color: #D6F3FF!important;
+}
+table.mwuba-recordstable code {
+	background-color: transparent;
+	border: none;
+}
