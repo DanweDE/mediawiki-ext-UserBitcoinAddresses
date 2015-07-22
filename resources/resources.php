@@ -8,7 +8,7 @@
 return call_user_func( function() {
 
 	$moduleTemplate = array(
-		'localBasePath' => __DIR__,
+		'localBasePath' => __DIR__ . '/src',
 		'remoteExtPath' => 'UserBitcoinAddresses/resources/src',
 	);
 
@@ -16,10 +16,6 @@ return call_user_func( function() {
 		'mw.ext.userBitcoinAddresses' => $moduleTemplate + array(
 			'scripts' => array(
 				'mw.ext.userBitcoinAddresses.js',
-			),
-			'styles' => array(
-			),
-			'dependencies' => array(
 			),
 		),
 		'mw.ext.userBitcoinAddresses.special' => $moduleTemplate + array(
@@ -38,7 +34,7 @@ return call_user_func( function() {
 		// VENDOR: (TODO: Move these from here and Wikibase to somewhere where we can share code)
 		'jquery.inputautoexpand' => $moduleTemplate + array(
 			'scripts' => array(
-				'vendor/jquery.inputautoexpand.js',
+				'../vendor/jquery.inputautoexpand.js',
 			),
 			'dependencies' => array(
 				'jquery.event.special.eachchange',
@@ -46,7 +42,7 @@ return call_user_func( function() {
 		),
 		'jquery.event.special.eachchange' => $moduleTemplate + array(
 			'scripts' => array(
-				'vendor/jquery.event.special.eachchange.js'
+				'../vendor/jquery.event.special.eachchange.js'
 			),
 			'dependencies' => array(
 				'jquery.client',

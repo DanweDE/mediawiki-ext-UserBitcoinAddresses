@@ -61,7 +61,7 @@ class ExtensionSetup {
 			isset( $this->globals['wgResourceModules'] )
 				? $this->globals['wgResourceModules']
 				: array(),
-			include( "{$this->rootDirectory}/resources/src/resources.php" )
+			include( "{$this->rootDirectory}/resources/resources.php" )
 		);
 	}
 
