@@ -9,6 +9,7 @@ for various purposes.
 
 [![Latest Stable Version](https://poser.pugx.org/mediawiki/user-bitcoin-addresses/version.png)](https://packagist.org/packages/mediawiki/user-bitcoin-addresses)
 [![Build Status](https://travis-ci.org/DanweDE/mediawiki-ext-UserBitcoinAddresses.svg?branch=master)](https://travis-ci.org/DanweDE/mediawiki-ext-UserBitcoinAddresses)
+[![Download count](https://poser.pugx.org/mediawiki/user-bitcoin-addresses/d/total.png)](https://packagist.org/packages/mediawiki/user-bitcoin-addresses)
 
 ## Requirements
 
