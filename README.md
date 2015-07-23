@@ -7,6 +7,8 @@ each registered wiki user to associate Bitcoin addresses with him or herself. Ot
 see those addresses by default. Other extensions might use these user related Bitcoin addresses
 for various purposes.
 
+[![Build Status](https://travis-ci.org/DanweDE/mediawiki-ext-UserBitcoinAddresses.svg?branch=master)](https://travis-ci.org/DanweDE/mediawiki-ext-UserBitcoinAddresses)
+
 ## Requirements
 
 * MediaWiki 1.25+
