@@ -7,8 +7,8 @@ matrix:
   include:
     - env: DBTYPE=mysql; MW=master
       php: 5.4
-#    - env: DBTYPE=mysql; MW=1.25.0
-#      php: 5.4
+    - env: DBTYPE=mysql; MW=1.25.0
+      php: 5.4
   exclude:
     - env: THENEEDFORTHIS=FAIL
 
