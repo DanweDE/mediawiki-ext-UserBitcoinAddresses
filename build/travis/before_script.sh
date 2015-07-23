@@ -18,6 +18,7 @@ fi
 cd phase3
 git checkout $MW
 
+composer self-update
 composer install --prefer-source
 
 mysql -e 'create database its_a_mw;'
