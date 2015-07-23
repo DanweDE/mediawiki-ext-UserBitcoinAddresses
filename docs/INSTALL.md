@@ -14,7 +14,7 @@ versions prior to 1.22 can try using Composer via the
 [Extension Installer](https://github.com/JeroenDeDauw/ExtensionInstaller/blob/master/README.md)
 extension.
 
-#### Installation in MediaWiki 1.22 or higher
+### Installation in MediaWiki 1.22 or higher
 
 Go to the root directory of your MediaWiki installation.
 
@@ -27,7 +27,7 @@ Using Composer, install the latest version of the extension with the following c
 
     php composer.phar require mediawiki/user-bitcoin-addresses "*"
 
-#### Verify installation success
+### Verify installation success
 
 As final step, you can verify the extension got installed by looking at the Special:Version page on your wiki and verifying the
 "User Bitcoin Addresses" extension is listed.

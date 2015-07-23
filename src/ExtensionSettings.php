@@ -11,6 +11,7 @@ namespace MediaWiki\Ext\UserBitcoinAddresses;
  * @author Daniel A. R. Werner <daniel.a.r.werner@gmail.com>
  */
 class ExtensionSettings {
+
 	/**
 	 * @var array
 	 */

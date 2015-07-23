@@ -12,10 +12,6 @@ use MediaWiki\Ext\UserBitcoinAddresses\MwBridge;
  * @author Daniel A. R. Werner <daniel.a.r.werner@gmail.com>
  */
 class Extension {
-	/**
-	 * The extension's version.
-	 */
-	const VERSION = '1.0.0 alpha';
 
 	/**
 	 * @since 1.0.0

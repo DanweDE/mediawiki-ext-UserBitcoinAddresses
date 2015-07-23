@@ -12,10 +12,11 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'Not an entry point.' );
 }
 
-// Never load twice:
-if( class_exists( 'MediaWiki\Ext\UserBitcoinAddresses\Extension' ) ) {
+if( defined( 'UserBitcoinAddresses_VERSION' ) ) {
+	// Never load twice!
 	return 1;
 }
+define( 'UserBitcoinAddresses_VERSION', '1.0.0rc1' );
 
 // Include Composer autoloader if present:
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
@@ -33,7 +34,7 @@ call_user_func( function() {
 		'path' => __FILE__,
 		'name' => 'User Bitcoin Addresses',
 		'descriptionmsg' => 'userbtcaddr-desc',
-		'version' => Extension::VERSION,
+		'version' => UserBitcoinAddresses_VERSION,
 		'author' => array(
 			'[https://www.mediawiki.org/wiki/User:Danwe Daniel A. R. Werner]',
 		),
@@ -47,8 +48,6 @@ call_user_func( function() {
 		= __DIR__ . '/UserBitcoinAddresses.i18n.aliases.php';
 
 	$wgExtensionFunctions[] = function() {
-		global $wgHooks;
-
 		$extension = new Extension( ExtensionSettings::newFromGlobals( $GLOBALS ) );
 		$extensionSetup = new ExtensionSetup( $extension, $GLOBALS, __DIR__ );
 

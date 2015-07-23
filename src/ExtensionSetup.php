@@ -66,8 +66,6 @@ class ExtensionSetup {
 	}
 
 	private function registerSpecialPages() {
-		$specialNs = 'MediaWiki\Ext\UserBitcoinAddresses\Specials';
-
 		$this->globals['wgSpecialPages']['UserBitcoinAddresses'] = function() {
 			return new SpecialUserBitcoinAddresses(
 				$this->extension->getUserBitcoinAddressRecordStore()
