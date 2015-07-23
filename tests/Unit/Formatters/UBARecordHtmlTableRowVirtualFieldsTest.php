@@ -122,7 +122,8 @@ class UBARecordHtmlTableRowVirtualFieldsTest extends \PHPUnit_Framework_TestCase
 				return $someValue;
 			}
 		);
-		$this->setExpectedExceptionRegExp( 'LogicException', "!field \"a\" is a $valueType!" );
+		$this->setExpectedException( 'LogicException',
+			"the value computed for field \"a\" is a $valueType while a string was expected" );
 
 		$fields->computeValueFor( 'a', $this->buildRecordMock() );
 	}

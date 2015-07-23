@@ -92,8 +92,9 @@ class UBARecordHtmlTableRowTest extends \MediaWikiTestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$record->method( 'getId' )
-			->willReturn( 42 );
+		$record->expects( $this->any() )
+			->method( 'getId' )
+			->will( $this->returnValue( 42 ) );
 
 		$this->assertRegExp( '!>1\.42</td>.+>2\.42</td>!', $formatter->format( $record ) );
 	}
