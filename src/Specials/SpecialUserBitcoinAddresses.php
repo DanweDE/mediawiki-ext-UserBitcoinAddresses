@@ -207,14 +207,24 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 	}
 	
 	protected function renderUsersBitcoinAddresses() {
-		$user = $this->getUser();
-		$usersUBARecords = $this->store->fetchAllForUser( $user );
+		$usersUBARecords = $this->store->fetchAllForUser( $this->getUser() );
 
+		if( !count( $usersUBARecords ) ) {
+			$html = $this->msg( 'userbtcaddr-noaddressesyet' )->text();
+		} else {
+			$tableFormatter = $this->getUBARTableFormatter();
+			$html = $tableFormatter->format( $usersUBARecords );
+		}
+
+		$this->getOutput()->addHtml( $html );
+	}
+
+	protected function getUBARTableFormatter() {
 		$tableFormatter = new UBARecordsHtmlTable();
 		$rowOptions = $tableFormatter->options()->rowFormatter()->options();
 		$rowOptions
 			->bitcoinAddressFormatter( new BitcoinAddressMonoSpaceHtml() )
-			->timeAndDateFormatter( new MWUserDateTimeHtml( $user) )
+			->timeAndDateFormatter( new MWUserDateTimeHtml( $this->getUser() ) )
 			->virtualFields()
 				->set( 'removeLink', function( UBARecord $record ) {
 					$recordId = $record->getId();
@@ -237,9 +247,7 @@ class SpecialUserBitcoinAddresses extends SpecialPage {
 				} );
 		$rowOptions->printAllFieldsWithout( 'user' );
 
-		$html = $tableFormatter->format( $usersUBARecords );
-
-		$this->getOutput()->addHtml( $html );
+		return $tableFormatter;
 	}
 
 	public function validateAddressInput( $value, $allData, $form ) {

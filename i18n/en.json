@@ -7,6 +7,7 @@
     "userbtcaddr-desc": "Allows the wiki's users to [[Special:UserBitcoinAddresses|submit Bitcoin addresses]] for usage with other Bitcoin related extensions.",
 	"special-userbitcoinaddresses": "User Bitcoin Addresses",
 	"userbtcaddr-loginrequired": "Please login to manage your Bitcoin addresses.",
+	"userbtcaddr-noaddressesyet": "You have no Bitcoin addresses associated with yourself yet. You can add your addresses above.",
 	"userbtcaddr-submitaddresses-manualinsert-legend": "Manually insert addresses",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-label": "Addresses",
 	"userbtcaddr-submitaddresses-manualinsert-addresses-explanation": "Multiple addresses may be separated by a newline or any other non-alphanumeric character.",

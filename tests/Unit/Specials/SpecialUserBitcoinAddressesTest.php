@@ -50,6 +50,50 @@ class SpecialUserBitcoinAddressesTest extends SpecialPageTestBase {
 		);
 	}
 
+	public function testNoAddressesNoTable() {
+		$mocker = new UserMocker();
+		$user = $mocker->newAuthorizedUser();
+
+		list( $html ) = $this->executeSpecialPage( '', null, 'qqx', $user );
+
+		$this->assertRegExp(
+			'/\(userbtcaddr-noaddressesyet\)/', $html );
+
+		$this->assertNotRegExp(
+			'/<table\s+[^>]*class="mwuba-recordstable"/', $html );
+	}
+
+	public function testAddressesInTable() {
+		$mocker = new UserMocker();
+		$specialPage = $this->newSpecialPageCompatibleWithMockUsers( $mocker );
+		$store = $specialPage->getUserBitcoinAddressStore();
+		$user = $mocker->newAuthorizedUser();
+		$address = ( new UBARBuilder() )
+			->user( $user )
+			->bitcoinAddress( self::$btcAddresses[ 1 ] )
+			->build();
+		$store->add( $address );
+
+		list( $html ) = $this->executeSpecialPage( '', null, 'qqx', $user );
+
+		$this->assertNotRegExp(
+			'/\(userbtcaddr-noaddressesyet\)/', $html );
+
+		$this->assertTag( array(
+			'tag' => 'table',
+			'attributes' => array(
+				'class' => 'mwuba-recordstable',
+			),
+			'descendant' => array(
+				'tag' => 'tr',
+				'descendant' => array(
+					'tag' => 'code',
+					'content' => $address->getBitcoinAddress()->asString(),
+				)
+			)
+		), $html );
+	}
+
 	/**
 	 * @dataProvider formInputAndExpectedOutputProvider
 	 */
